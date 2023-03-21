@@ -1,4 +1,5 @@
 package model.world;
+import model.characters.Character;
 
 public class CharacterCell extends Cell{
 	
@@ -24,10 +25,9 @@ public class CharacterCell extends Cell{
 		this.isSafe = isSafe;
 	}
 	
-	public CharacterCell(Character character, boolean isSafe) {
+	public CharacterCell(Character character) {
 		super();
 		this.character=character;
-		this.isSafe=isSafe;
 	}
 	
 }

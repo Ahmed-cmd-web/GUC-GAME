@@ -10,9 +10,8 @@ public class CollectibleCell extends Cell{
 		return collectible;
 	}
 
-	public void setCollectible(Collectible collectible) {
-		this.collectible = collectible;
+	public CollectibleCell(Collectible collectible){
+		super();
+		this.collectible=collectible;
 	}
-	
-	
 }

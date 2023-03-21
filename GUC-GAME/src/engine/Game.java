@@ -11,13 +11,13 @@ import java.io.IOException;
 
 public class Game {
 
-	public static ArrayList<Hero> availableHeros=new ArrayList<>();
+	public static ArrayList<Hero> availableHeroes;
 	//arraylist representing the available Heros in the game.
 	
-	public static ArrayList<Hero> heros=new ArrayList<>();
+	public static ArrayList<Hero> heroes;
 	//arraylist representing the Heros participating in the game.
 	
-	public static ArrayList<Zombie> zombies=new ArrayList<>();
+	public static ArrayList<Zombie> zombies;
 	//arraylist representing the 10 zombies generated in the game.
 	
 	public static Cell [][] map;
@@ -35,7 +35,6 @@ public class Game {
 			var maxHp=sc.nextInt();
 			var maxActions=sc.nextInt();
 			var attackDmg=sc.nextInt();
-			availableHeros.add(new Hero(name, maxHp, attackDmg, maxActions));
 		}
 	}
 	
