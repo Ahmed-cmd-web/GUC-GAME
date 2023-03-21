@@ -2,7 +2,7 @@ package model.world;
 
 //A class representing Cells in the game.
 
-public class Cell {
+public abstract class Cell {
 
 	private boolean isVisible;
 	//Boolean representing if the cell is visible or not, READ & WRITE.
