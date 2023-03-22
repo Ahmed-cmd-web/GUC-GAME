@@ -4,23 +4,23 @@ import java.util.*;
 
 //class representing Heros in the game. This class is a subclass of the Character class.
 
-public class Hero extends Character {
+public abstract class Hero extends Character {
 
 	private int actionsAvailable;
 	//int representing the number of the actions available for each hero in a turn, READ & WRITE.
-	
+
 	private int maxActions;
 	//int representing the maximum number of actions a hero can make in a turn, READ ONLY.
-	
+
 	private boolean specialAction;
 	//boolean represents if the hero has used his special action, READ & WRITE.
-	
+
 	ArrayList<Vaccine> vaccineInventory;
 	//A list representing the vaccines collected by each hero, READ ONLY.
-	
+
 	ArrayList<Supply> supplyInventory;
 	//A list representing the supplies collected by each hero, READ ONLY.
-	
+
 	public int getActionsAvailable() {
 		return actionsAvailable;
 	}
@@ -64,7 +64,10 @@ public class Hero extends Character {
 	public Hero(String name, int maxHp, int attackDmg, int maxActions) {
 		super(name, maxHp, attackDmg);
 		this.maxActions=maxActions;
-		this.actionsAvailable=maxActions;
+		this.actionsAvailable = maxActions;
+		this.vaccineInventory = new ArrayList<>();
+		this.supplyInventory = new ArrayList<>();
+		setCurrentHp(maxHp);
 	}
-	
+
 }

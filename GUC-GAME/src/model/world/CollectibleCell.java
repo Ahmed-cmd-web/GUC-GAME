@@ -2,7 +2,7 @@ package model.world;
 import model.collectibles.*;
 
 public class CollectibleCell extends Cell{
-	
+
 	private Collectible collectible;
 	//READ ONLY.
 
@@ -11,7 +11,6 @@ public class CollectibleCell extends Cell{
 	}
 
 	public CollectibleCell(Collectible collectible){
-		super();
 		this.collectible=collectible;
 	}
 }

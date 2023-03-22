@@ -8,23 +8,23 @@ public abstract class Character {
 
 	private String name;
 	//Name of the characters, READ ONLY.
-	
+
 	private Point location;
 	//point representing the x, y coordinates of the character’s location.
-	
+
 	private int maxHp;
 	//maximum hp of this character, READ ONLY.
 	//This is the upper bound of character’s currentHP.
-	
+
 	private int currentHp;
 	//integer representing the current hp of this character.
-	
+
 	private int attackDmg;
 	//number represents the damage inflicted by the character on its target, READ ONLY.
-	
+
 	private Character target;
 	//variable representing the target character that will be affected by any possible action done by the character.
-	
+
 	public String getName() {
 		return name;
 	}
@@ -54,7 +54,10 @@ public abstract class Character {
 	}
 
 	public void setCurrentHp(int currentHp) {
-		this.currentHp = currentHp;
+		if (currentHp > maxHp)
+			this.currentHp = maxHp;
+		else
+			this.currentHp = currentHp;
 	}
 
 	public int getAttackDmg() {
@@ -73,11 +76,12 @@ public abstract class Character {
 		this.target = target;
 	}
 
-	
+
 	public Character(String name, int maxHp, int attackDmg) {
 		this.name=name;
 		this.maxHp=maxHp;
-		this.attackDmg=attackDmg;
+		this.attackDmg = attackDmg;
+		setCurrentHp(maxHp);
 	}
-	
+
 }
