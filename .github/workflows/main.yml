@@ -1,0 +1,7 @@
+name: build
+on:
+  pull_request:
+jobs:
+  build:
+    name: Build and Run Tests
+    runs-on: ubuntu-latest
