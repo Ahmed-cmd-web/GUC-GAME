@@ -12,7 +12,10 @@ public class  Zombie extends Character{
 	}
 
 	public void setSpeed(int speed) {
-		this.speed = speed;
+        if (speed<0)
+           this.speed=0;
+        else
+		   this.speed = speed;
 	}
 
 	public Zombie() {
@@ -21,7 +24,7 @@ public class  Zombie extends Character{
 
 	public Zombie(int speed) {
 		super("Zombie " + ++ZOMBIES_COUNT, 40, 10);
-		this.speed = speed;
+        this.setSpeed(speed);
 	}
 
 }
