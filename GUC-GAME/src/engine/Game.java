@@ -1,64 +1,57 @@
 package engine;
-import java.util.*;
-import model.characters.*;
-import model.world.*;
-import java.io.File;
-import java.io.IOException;
-//A class representing the Game itself. This class will represent the main engine of the game,
-//and will ensure all game rules are followed.
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import model.characters.Explorer;
+import model.characters.Fighter;
+import model.characters.Hero;
+import model.characters.Medic;
+import model.characters.Zombie;
+import model.world.Cell;
 
 public class Game {
-
-	public static ArrayList<Hero> availableHeroes;
-	//arraylist representing the available Heros in the game.
-
-	public static ArrayList<Hero> heroes;
-	//arraylist representing the Heros participating in the game.
-
-	//arraylist representing the 10 zombies generated in the game.
-	public static ArrayList<Zombie> zombies;
-
-	public static Cell [][] map;
-	//A 2D array representing the map in the game.
-
-
-
-	public static void loadHeroes(String filePath)
-			throws IOException {
-		Scanner sc = new Scanner(new File(filePath));
-		sc.useDelimiter(",|\\R");
-
-		while (sc.hasNext()) {
-			var name = sc.next();
-			var type = sc.next();
-			var maxHp = sc.nextInt();
-			var maxActions = sc.nextInt();
-			var attackDmg = sc.nextInt();
-
-			switch (type) {
-				case "MED":
-					availableHeroes.add(new Medic(name, maxHp, attackDmg, maxActions));
-					break;
-				case "FIGH":
-					availableHeroes.add(new Fighter(name, maxHp, attackDmg, maxActions));
-					break;
-				case "EXP":
-					availableHeroes.add(new Explorer(name, maxHp, attackDmg, maxActions));
-					break;
-				default:
-					break;
-			}
-
-		}
-	}
-
-
-	public Game() {
-		availableHeroes = new ArrayList<>();
-		zombies = new ArrayList<>();
-		heroes=new ArrayList<>();
-	}
 	
+	public static Cell [][] map ;
+	public static ArrayList <Hero> availableHeroes = new ArrayList<Hero>();
+	public static ArrayList <Hero> heroes =  new ArrayList<Hero>();
+	public static ArrayList <Zombie> zombies =  new ArrayList<Zombie>();
+	
+	
+	
+		
+	public static void loadHeroes(String filePath)  throws IOException {
+		
+		
+		BufferedReader br = new BufferedReader(new FileReader(filePath));
+		String line = br.readLine();
+		while (line != null) {
+			String[] content = line.split(",");
+			Hero hero=null;
+			switch (content[1]) {
+			case "FIGH":
+				hero = new Fighter(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]), Integer.parseInt(content[3]));
+				break;
+			case "MED":  
+				hero = new Medic(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]), Integer.parseInt(content[3])) ;
+				break;
+			case "EXP":  
+				hero = new Explorer(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]), Integer.parseInt(content[3]));
+				break;
+			}
+			availableHeroes.add(hero);
+			line = br.readLine();
+			
+			
+		}
+		br.close();
+
+		
+		
+	}
+
+
 
 }

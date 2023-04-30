@@ -1,33 +1,53 @@
 package model.world;
+
 import model.characters.Character;
 
-public class CharacterCell extends Cell{
-	
+public class CharacterCell extends Cell {
+
 	private Character character;
-	//READ & WRITE.
 	
 	private boolean isSafe;
-	//READ & WRITE.
-
-	public Character getCharacter() {
-		return character;
-	}
-
-	public void setCharacter(Character character) {
+	
+	public CharacterCell(Character character,boolean isSafe) {
+		
 		this.character = character;
-	}
-
-	public boolean isSafe() {
-		return isSafe;
-	}
-
-	public void setSafe(boolean isSafe) {
+		
 		this.isSafe = isSafe;
+	
 	}
 	
 	public CharacterCell(Character character) {
-		super();
-		this.character=character;
+	
+		this.character = character;
+		
+		this.isSafe = false;
+	
 	}
 	
+	
+	public Character getCharacter() {
+	
+		return character;
+	
+	}
+	
+	public void setCharacter(Character character) {
+	
+		this.character = character;
+	
+	}
+	
+	
+	public boolean isSafe() {
+	
+		return isSafe;
+	
+	}
+	
+	public void setSafe(boolean isSafe) {
+	
+		this.isSafe = isSafe;
+	
+	}
+
 }

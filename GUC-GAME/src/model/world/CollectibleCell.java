@@ -1,16 +1,17 @@
 package model.world;
-import model.collectibles.*;
 
-public class CollectibleCell extends Cell{
+import model.collectibles.Collectible;
+
+public class CollectibleCell extends Cell {
 
 	private Collectible collectible;
-	//READ ONLY.
+	
+	public CollectibleCell(Collectible collectible) {
+		this.collectible = collectible;
+	}
 
 	public Collectible getCollectible() {
 		return collectible;
 	}
 
-	public CollectibleCell(Collectible collectible){
-		this.collectible=collectible;
-	}
 }

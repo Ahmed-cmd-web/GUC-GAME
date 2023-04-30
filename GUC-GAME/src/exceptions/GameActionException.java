@@ -1,14 +1,13 @@
 package exceptions;
 
-//representing a generic exception that can occur during the game play.
+public abstract class GameActionException extends Exception{
 
-public abstract class GameActionException extends Exception {
-    
-    public GameActionException(){
-        super();
-    }
-    public GameActionException(String s){
-        super(s);
-    }
+	public GameActionException() {
+		// TODO Auto-generated constructor stub
+		super();
+	}
+	public GameActionException(String message) {
+		super(message);
+	}
 
 }
