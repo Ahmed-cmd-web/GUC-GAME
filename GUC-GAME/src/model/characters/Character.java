@@ -1,6 +1,7 @@
 package model.characters;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import engine.Game;
@@ -123,6 +124,25 @@ public abstract class Character {
 			return;
 		Game.heroes.remove(this);
 		var cell = Game.map[(int) this.getLocation().getX()][(int) this.getLocation().getY()];
-		((CharacterCell)cell).setCharacter(null);
+		((CharacterCell) cell).setCharacter(null);
+		((CharacterCell) cell).setVisible(false);
+	}
+
+
+
+	public Cell[] getAdjacentCells() {
+		var arr = new ArrayList<Cell>();
+			var x = this.getLocation().getX();
+			var y = this.getLocation().getY();
+			for (int i = -1; i < 2; i++) {
+				for (int j = -1; j < 2; j++) {
+					if ((i + x) <= 14 && (j + y) <= 14 && (i + x) >= 0 && (j + y) >= 0) {
+						var cell = Game.map[(int) (i + x)][(int) (j + y)];
+						if (cell != null)
+							arr.add(cell);
+					}
+				}
+			}
+			return arr.toArray(new Cell[arr.size()]);
 	}
 }

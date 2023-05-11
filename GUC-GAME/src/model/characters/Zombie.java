@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import engine.Game;
 import exceptions.GameActionException;
+import model.world.Cell;
 import model.world.CharacterCell;
 
 public class Zombie extends Character {
@@ -27,17 +28,11 @@ public class Zombie extends Character {
 
 
 	public void setAdjacentTarget() {
-		var x = this.getLocation().getX();
-		var y = this.getLocation().getY();
-		for (int i = -1; i < 2; i++) {
-			for (int j = -1; j < 2; j++) {
-				if ((i + x) <= 14 && (j + y) <= 14 && (i + x) >= 0 && (j + y) >= 0) {
-					var cell = Game.map[(int) (i + x)][(int) (j + y)];
-					if (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter() instanceof Hero) {
-						this.setTarget(((CharacterCell) cell).getCharacter());
-						return;
-					}
-				}
+		var cells=this.getAdjacentCells();
+		for (Cell cell : cells) {
+			if (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter() instanceof Hero) {
+					this.setTarget(((CharacterCell) cell).getCharacter());
+					return;
 			}
 		}
 	}

@@ -34,7 +34,7 @@ import model.world.TrapCell;
 
 public class Game {
 
-	public static Cell[][] map = new Cell[15][15];
+	public static Cell[][] map=new Cell[15][15];
 	public static ArrayList<Hero> availableHeroes = new ArrayList<Hero>();
 	public static ArrayList<Hero> heroes = new ArrayList<Hero>();
 	public static ArrayList<Zombie> zombies = new ArrayList<Zombie>();
@@ -75,26 +75,29 @@ public class Game {
 		Random r = new Random();
 		int x = r.nextInt(15);
 		int y = r.nextInt(15);
-		while (map[x][y] != null) {
+		while (map[x][y] instanceof CharacterCell && ((CharacterCell)map[x][y]).getCharacter()!=null) {
 			x = r.nextInt(15);
 			y = r.nextInt(15);
 		}
 		map[x][y] = c;
 	}
 
-	// public static void startGame(Hero h) {
-	// 	heroes.add(h);
-	// 	availableHeroes.remove(h);
-	// 	map[0][0] = new CharacterCell(h);
-	// 	h.setLocation(new Point(0, 0));
-	// 	for (int i = 0; i < 5; i++) {
-	// 		spawnRandomly(new CollectibleCell(new Supply()));
-	// 		spawnRandomly(new CollectibleCell(new Vaccine()));
-	// 		spawnRandomly(new TrapCell());
-	// 		spawnRandomly(new CharacterCell(new Zombie()));
-	// 		spawnRandomly(new CharacterCell(new Zombie()));
-	// 	}
-	// }
+	public static void startGame(Hero h) {
+		for (int i = 0; i < 15; i++)
+			for (int j = 0; j < 15; j++)
+				map[i][j] = new CharacterCell(null);
+		heroes.add(h);
+		availableHeroes.remove(h);
+		map[0][0] = new CharacterCell(h);
+		h.setLocation(new Point(0, 0));
+		for (int i = 0; i < 5; i++) {
+			spawnRandomly(new CollectibleCell(new Supply()));
+			spawnRandomly(new CollectibleCell(new Vaccine()));
+			spawnRandomly(new TrapCell());
+			spawnRandomly(new CharacterCell(new Zombie()));
+			spawnRandomly(new CharacterCell(new Zombie()));
+		}
+	}
 
 
 	public static void endTurn() throws GameActionException {
@@ -106,8 +109,10 @@ public class Game {
 			h.setActionsAvailable(h.getMaxActions());
 			h.setSpecialAction(false);
 			h.setTarget(null);
+			h.updateVisibilty();
 		}
 		addZombie();
+
 	}
 
 	public static void addZombie() {
@@ -122,7 +127,7 @@ public class Game {
 				zombies.add(z);
 				z.setLocation(new Point(x, y));
 				break;
-			} 
+			}
 		}
 	}
 

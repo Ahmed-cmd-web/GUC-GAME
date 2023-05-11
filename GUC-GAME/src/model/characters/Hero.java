@@ -129,7 +129,11 @@ public abstract class Hero extends Character {
 			return true;
 		}
 
-
+		public void updateVisibilty() {
+			var cells = this.getAdjacentCells();
+			for (Cell cell : cells)
+				cell.setVisible(this.getCurrentHp() != 0);
+		}
 
 		public void move(Direction d) throws GameActionException {
 			if (this.getActionsAvailable() == 0)
@@ -148,7 +152,7 @@ public abstract class Hero extends Character {
 			this.onCharacterDeath();
 			Game.map[(int) newLoc.getX()][(int) newLoc.getY()] = new CharacterCell(
 					((CharacterCell) oldCell).getCharacter());
-			oldCell.setVisible(false);
+			updateVisibilty();
 			((CharacterCell)(oldCell)).setCharacter(null);
 			this.setActionsAvailable(this.actionsAvailable - 1);
 			this.setLocation(newLoc);
@@ -197,5 +201,5 @@ public abstract class Hero extends Character {
 			this.setSpecialAction(false);
 		}
 
-		
+
 }
