@@ -26,7 +26,7 @@ public class Zombie extends Character {
 	}
 
 
-	private void setAdjacentTarget() {
+	public void setAdjacentTarget() {
 		var x = this.getLocation().getX();
 		var y = this.getLocation().getY();
 		for (int i = -1; i < 2; i++) {

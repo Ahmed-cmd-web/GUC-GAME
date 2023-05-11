@@ -15,6 +15,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import exceptions.GameActionException;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -80,30 +82,49 @@ public class Game {
 		map[x][y] = c;
 	}
 
-	public static void startGame(Hero h) {
-		heroes.add(h);
-		availableHeroes.remove(h);
-		map[0][0] = new CharacterCell(h);
-		h.setLocation(new Point(0, 0));
-		for (int i = 0; i < 5; i++) {
-			spawnRandomly(new CollectibleCell(new Supply()));
-			spawnRandomly(new CollectibleCell(new Vaccine()));
-			spawnRandomly(new TrapCell());
-			spawnRandomly(new CharacterCell(new Zombie()));
-			spawnRandomly(new CharacterCell(new Zombie()));
+	// public static void startGame(Hero h) {
+	// 	heroes.add(h);
+	// 	availableHeroes.remove(h);
+	// 	map[0][0] = new CharacterCell(h);
+	// 	h.setLocation(new Point(0, 0));
+	// 	for (int i = 0; i < 5; i++) {
+	// 		spawnRandomly(new CollectibleCell(new Supply()));
+	// 		spawnRandomly(new CollectibleCell(new Vaccine()));
+	// 		spawnRandomly(new TrapCell());
+	// 		spawnRandomly(new CharacterCell(new Zombie()));
+	// 		spawnRandomly(new CharacterCell(new Zombie()));
+	// 	}
+	// }
+
+
+	public static void endTurn() throws GameActionException {
+		for (Zombie zombie : zombies){
+			zombie.setAdjacentTarget();
+			zombie.attack();
+		}
+		for (Hero h:heroes){
+			h.setActionsAvailable(h.getMaxActions());
+			h.setSpecialAction(false);
+			h.setTarget(null);
+		}
+		addZombie();
+	}
+
+	public static void addZombie() {
+		Random rx= new Random();
+		Random ry= new Random();
+		while(true){
+			int x=rx.nextInt(15);
+			int y=ry.nextInt(15);
+			if(map[x][y] instanceof CharacterCell && ((CharacterCell)map[x][y]).getCharacter()==null) {
+				Zombie z = new Zombie();
+				((CharacterCell)map[x][y]).setCharacter(z);
+				zombies.add(z);
+				z.setLocation(new Point(x, y));
+				break;
+			} 
 		}
 	}
-
-
-	public static void endTurn() {
-		for (Zombie zombie : zombies)
-			try {
-				zombie.attack();
-			} catch (Exception e) {};
-		// spawnRandomly(new CharacterCell(new Zombie()));
-
-	}
-
 
 	// public static void main(String[] args) {
 	// 	startGame(new Fighter(null, 0, 0, 0));
