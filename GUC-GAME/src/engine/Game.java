@@ -69,6 +69,30 @@ public class Game {
 		br.close();
 	}
 
+	public static boolean checkInv(){
+		for(Hero h: heroes)
+			if(h.getVaccineInventory().size()!=0)
+				return false;
+		return true;
+	}
+	public static boolean checkVac(){
+		for(int i=0;i<15;i++)
+			for(int j=0;j<15;j++)
+				if(map[i][j] instanceof CollectibleCell)
+					if(((CollectibleCell)map[i][j]).getCollectible() instanceof Vaccine)
+						return false;
+		return true;
+	}
+
+	public static boolean checkWin() {
+		return (heroes.size()>=5)&&checkInv()&&checkVac();
+	}
+	public static boolean checkLose() {
+		return (heroes.size()==0)||(checkInv()&&checkVac());
+	}
+	public static boolean checkGameOver(){
+		return checkWin()||checkLose();
+	}
 
 	public static void spawnRandomly(Cell c) {
 		Random r = new Random();
