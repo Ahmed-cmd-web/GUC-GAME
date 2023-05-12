@@ -98,7 +98,8 @@ public class Game {
 		Random r = new Random();
 		int x = r.nextInt(15);
 		int y = r.nextInt(15);
-		while (map[x][y] instanceof CharacterCell && ((CharacterCell)map[x][y]).getCharacter()!=null) {
+		while (map[x][y] instanceof CharacterCell && ((CharacterCell) map[x][y]).getCharacter() != null
+		|| map[x][y] instanceof CollectibleCell || map[x][y] instanceof TrapCell) {
 			x = r.nextInt(15);
 			y = r.nextInt(15);
 		}
@@ -140,7 +141,8 @@ public class Game {
 		var zombie = new Zombie();
 		zombies.add(zombie);
 		spawnRandomly(new CharacterCell(zombie));
-
+		for (Zombie zombie2 : zombies)
+			zombie2.setTarget(null);
 	}
 
 	public static void addZombie() {

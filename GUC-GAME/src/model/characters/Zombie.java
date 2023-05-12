@@ -1,7 +1,5 @@
 package model.characters;
 
-import java.util.ArrayList;
-import exceptions.GameActionException;
 
 import engine.Game;
 import exceptions.InvalidTargetException;
@@ -49,9 +47,12 @@ public class Zombie extends Character {
 
 	@Override
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
-		this.setAdjacentTarget();
-		if (this.getTarget() == null)
+		if (this.getTarget()==null)
+			this.setAdjacentTarget();
+		if (!this.isAdjacent())
 			return;
+		// if (this.getTarget() == null)
+		// 	return;
 		super.attack();
 	}
 
