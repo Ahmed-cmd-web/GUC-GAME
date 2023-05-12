@@ -90,6 +90,7 @@ public class Game {
 		availableHeroes.remove(h);
 		map[0][0] = new CharacterCell(h);
 		h.setLocation(new Point(0, 0));
+		h.updateVisibilty();
 		for (int i = 0; i < 5; i++) {
 			spawnRandomly(new CollectibleCell(new Supply()));
 			spawnRandomly(new CollectibleCell(new Vaccine()));
@@ -111,7 +112,7 @@ public class Game {
 			h.setTarget(null);
 			h.updateVisibilty();
 		}
-		addZombie();
+		spawnRandomly(new CharacterCell(new Zombie()));
 
 	}
 

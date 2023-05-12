@@ -199,6 +199,7 @@ public abstract class Hero extends Character {
 			this.setActionsAvailable(this.getActionsAvailable()-1);
 			super.attack();
 			this.setSpecialAction(false);
+			this.onCharacterDeath();
 		}
 
 

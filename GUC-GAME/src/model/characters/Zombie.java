@@ -30,7 +30,7 @@ public class Zombie extends Character {
 	public void setAdjacentTarget() {
 		var cells=this.getAdjacentCells();
 		for (Cell cell : cells) {
-			if (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter() instanceof Hero) {
+			if (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter()!= null &&((CharacterCell) cell).getCharacter().isHero() ) {
 					this.setTarget(((CharacterCell) cell).getCharacter());
 					return;
 			}
@@ -52,6 +52,8 @@ public class Zombie extends Character {
 	@Override
 	public void attack() throws GameActionException {
 		this.setAdjacentTarget();
+		if (this.getTarget() == null)
+			return;
 		super.attack();
 	}
 
