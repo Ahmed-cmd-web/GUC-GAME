@@ -33,7 +33,6 @@ import model.world.CollectibleCell;
 import model.world.TrapCell;
 
 public class Game {
-
 	public static Cell[][] map=new Cell[15][15];
 	public static ArrayList<Hero> availableHeroes = new ArrayList<Hero>();
 	public static ArrayList<Hero> heroes = new ArrayList<Hero>();

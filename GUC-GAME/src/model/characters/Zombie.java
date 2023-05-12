@@ -1,9 +1,11 @@
 package model.characters;
 
 import java.util.ArrayList;
+import exceptions.GameActionException;
 
 import engine.Game;
-import exceptions.GameActionException;
+import exceptions.InvalidTargetException;
+import exceptions.NotEnoughActionsException;
 import model.world.Cell;
 import model.world.CharacterCell;
 
@@ -26,44 +28,31 @@ public class Zombie extends Character {
 		this.setHero(false);
 	}
 
-
 	public void setAdjacentTarget() {
-		var cells=this.getAdjacentCells();
+		var cells = this.getAdjacentCells();
 		for (Cell cell : cells) {
-			if (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter()!= null &&((CharacterCell) cell).getCharacter().isHero() ) {
-					this.setTarget(((CharacterCell) cell).getCharacter());
-					return;
+			if (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter() != null
+					&& ((CharacterCell) cell).getCharacter().isHero()) {
+				this.setTarget(((CharacterCell) cell).getCharacter());
+				return;
 			}
 		}
 	}
 
-
-
 	@Override
 	public void onCharacterDeath() {
-		// TODO Auto-generated method stub
 		super.onCharacterDeath();
 		Game.spawnRandomly(new CharacterCell(new Zombie()));
 		Game.zombies.remove(this);
 
 	}
 
-
 	@Override
-	public void attack() throws GameActionException {
+	public void attack() throws InvalidTargetException, NotEnoughActionsException {
 		this.setAdjacentTarget();
 		if (this.getTarget() == null)
 			return;
 		super.attack();
 	}
-
-
-	// public static void main(String[] args) {
-	// 	for (int i = -1; i < 2; i++) {
-	// 		for (int j = -1; j < 2; j++) {
-	// 			System.out.println(i+","+j);
-	// 		}
-	// 	}
-	// }
 
 }

@@ -8,6 +8,7 @@ import engine.Game;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.MovementException;
+import exceptions.NotEnoughActionsException;
 import model.collectibles.Supply;
 import model.collectibles.Vaccine;
 import model.world.Cell;
@@ -26,12 +27,11 @@ public abstract class Character {
 	private boolean isHero;
 	private Character target;
 
-
 	public Character() {
 	}
 
 	public Character(String name, int maxHp, int attackDmg) {
-		this.name=name;
+		this.name = name;
 		this.maxHp = maxHp;
 		this.currentHp = maxHp;
 		this.attackDmg = attackDmg;
@@ -55,20 +55,19 @@ public abstract class Character {
 	}
 
 	public void changeResources(Cell newCell) {
-		if (newCell instanceof TrapCell){
+		if (newCell instanceof TrapCell) {
 			this.setCurrentHp(this.getCurrentHp() - ((TrapCell) newCell).getTrapDamage());
 			this.onCharacterDeath();
-		}
-		else if (newCell instanceof CollectibleCell  && this.isHero()) {
+		} else if (newCell instanceof CollectibleCell && this.isHero()) {
 			var collectibleCell = (CollectibleCell) newCell;
 			if (((CollectibleCell) newCell).getCollectible() instanceof Supply)
-				((Hero)this).addSupply((Supply)collectibleCell.getCollectible());
+				((Hero) this).addSupply((Supply) collectibleCell.getCollectible());
 			else
-				((Hero)this).addVaccine((Vaccine)collectibleCell.getCollectible());
+				((Hero) this).addVaccine((Vaccine) collectibleCell.getCollectible());
 		}
 	}
 
-	public void setLocation(Point loc)  {
+	public void setLocation(Point loc) {
 		this.location = loc;
 	}
 
@@ -81,9 +80,9 @@ public abstract class Character {
 	}
 
 	public void setCurrentHp(int currentHp) {
-		if(currentHp < 0)
+		if (currentHp < 0)
 			this.currentHp = 0;
-		else if(currentHp > maxHp)
+		else if (currentHp > maxHp)
 			this.currentHp = maxHp;
 		else
 			this.currentHp = currentHp;
@@ -106,7 +105,7 @@ public abstract class Character {
 				- this.getTarget().getLocation().getY()) <= 2;
 	}
 
-	public void attack() throws GameActionException {
+	public void attack() throws InvalidTargetException, NotEnoughActionsException {
 		if (!this.isAdjacent() || (this.target.isHero() && this.isHero()) || (!this.target.isHero() && !this.isHero()))
 			throw new InvalidTargetException();
 		this.target.setCurrentHp(this.target.getCurrentHp() - this.attackDmg);
@@ -116,33 +115,36 @@ public abstract class Character {
 	}
 
 	public void defend(Character c) {
-		c.setCurrentHp(c.getCurrentHp() - (this.getAttackDmg()/2));
+		c.setCurrentHp(c.getCurrentHp() - (this.getAttackDmg() / 2));
 	}
 
 	public void onCharacterDeath() {
 		if (this.currentHp != 0)
 			return;
-		Game.heroes.remove(this);
+
 		var cell = Game.map[(int) this.getLocation().getX()][(int) this.getLocation().getY()];
+		if (((CharacterCell) cell).getCharacter() != null &&((CharacterCell) cell).getCharacter().isHero())
+			Game.heroes.remove(this);
+		else
+			Game.zombies.remove(this);
 		((CharacterCell) cell).setCharacter(null);
 		((CharacterCell) cell).setVisible(false);
+
 	}
-
-
 
 	public Cell[] getAdjacentCells() {
 		var arr = new ArrayList<Cell>();
-			var x = this.getLocation().getX();
-			var y = this.getLocation().getY();
-			for (int i = -1; i < 2; i++) {
-				for (int j = -1; j < 2; j++) {
-					if ((i + x) <= 14 && (j + y) <= 14 && (i + x) >= 0 && (j + y) >= 0) {
-						var cell = Game.map[(int) (i + x)][(int) (j + y)];
-						if (cell != null)
-							arr.add(cell);
-					}
+		var x = this.getLocation().getX();
+		var y = this.getLocation().getY();
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if ((i + x) <= 14 && (j + y) <= 14 && (i + x) >= 0 && (j + y) >= 0) {
+					var cell = Game.map[(int) (i + x)][(int) (j + y)];
+					if (cell != null)
+						arr.add(cell);
 				}
 			}
-			return arr.toArray(new Cell[arr.size()]);
+		}
+		return arr.toArray(new Cell[arr.size()]);
 	}
 }
