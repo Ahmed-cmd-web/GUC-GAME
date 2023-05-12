@@ -172,20 +172,13 @@ public abstract class Hero extends Character {
 		 * @throws GameActionException
 		 */
 		public void cure() throws GameActionException {
-			// if (this.getTarget() == null || !this.isAdjacent() || (this.getTarget().isHero() && this.isHero()) || (!this.getTarget().isHero() && !this.isHero()))
-				// throw new InvalidTargetException();
-			// if (this.getActionsAvailable() == 0)
-			// 	throw new NotEnoughActionsException(getName());
+			if (this.getTarget() == null || !this.isAdjacent() || (this.getTarget().isHero()))
+				throw new InvalidTargetException();
+			if (this.getActionsAvailable() == 0)
+				 	throw new NotEnoughActionsException(getName());
 			if (!this.isAdjacent())
 				throw new InvalidTargetException();
 			this.getVaccineInventory().get(0).use(this);
-
-			// Game.zombies.remove(this.getTarget());
-			// int r = new Random().nextInt(Game.availableHeroes.size());
-			// var newHero = Game.availableHeroes.remove(r);
-			// Game.heroes.add(newHero);
-			// var cell = (CharacterCell) Game.getCell(this.getTarget().getLocation());
-			// cell.setCharacter(newHero);
 		}
 
 

@@ -104,26 +104,6 @@ public class Game {
 		}
 		map[x][y] = c;
 	}
-
-	public static void startGame(Hero h) {
-		for (int i = 0; i < 15; i++)
-			for (int j = 0; j < 15; j++)
-				map[i][j] = new CharacterCell(null);
-		heroes.add(h);
-		availableHeroes.remove(h);
-		map[0][0] = new CharacterCell(h);
-		h.setLocation(new Point(0, 0));
-		h.updateVisibilty();
-		for (int i = 0; i < 5; i++) {
-			spawnRandomly(new CollectibleCell(new Supply()));
-			spawnRandomly(new CollectibleCell(new Vaccine()));
-			spawnRandomly(new TrapCell());
-			spawnRandomly(new CharacterCell(new Zombie()));
-			spawnRandomly(new CharacterCell(new Zombie()));
-		}
-	}
-
-
 	public static void endTurn() throws GameActionException {
 		for (Zombie zombie : zombies)
 			zombie.attack();
@@ -137,10 +117,25 @@ public class Game {
 			h.setTarget(null);
 			h.updateVisibilty();
 		}
-		var zombie = new Zombie();
-		zombies.add(zombie);
-		spawnRandomly(new CharacterCell(zombie));
+		addZombie();
+	}
 
+	public static void startGame(Hero h){
+		for(int i=0;i<15;i++)
+			for(int j=0;j<15;j++)
+				map[i][j]= new CharacterCell(null);
+		heroes.add(h);
+		availableHeroes.remove(h);
+		((CharacterCell)map[0][0]).setCharacter(h);
+		h.setLocation(new Point(0,0));
+		for(int i=0;i<5;i++)
+			addAll();
+		for(int i=0;i<10;i++)
+			addZombie();
+		map[0][0].setVisible(true);
+		map[0][1].setVisible(true);
+		map[1][0].setVisible(true);
+		map[1][1].setVisible(true);
 	}
 
 	public static void addZombie() {
@@ -157,6 +152,34 @@ public class Game {
 				break;
 			}
 		}
+	}
+	public static void addAll() {
+		Random r= new Random();
+		while(true){
+				int xT=r.nextInt(15);
+				int yT=r.nextInt(15);
+				if(map[xT][yT] instanceof CharacterCell && ((CharacterCell)map[xT][yT]).getCharacter()==null){
+					map[xT][yT]= new TrapCell();
+					break;
+				}
+		}			
+		while(true){
+				int xS=r.nextInt(15);
+				int yS=r.nextInt(15);
+				if(map[xS][yS] instanceof CharacterCell && ((CharacterCell)map[xS][yS]).getCharacter()==null){
+					map[xS][yS]= new CollectibleCell(new Supply());
+					break;
+				}
+		}
+		while(true){		
+				int xV=r.nextInt(15);
+				int yV=r.nextInt(15);
+				if(map[xV][yV] instanceof CharacterCell && ((CharacterCell)map[xV][yV]).getCharacter()==null){
+					map[xV][yV]= new CollectibleCell(new Vaccine());
+					break;
+				}
+		}			
+				
 	}
 
 	// public static void main(String[] args) {
