@@ -160,8 +160,8 @@ public abstract class Hero extends Character {
 
 		public void useSpecial() throws GameActionException {
 			this.setSpecialAction(true);
-			if (this.getActionsAvailable() == 0)
-				throw new NotEnoughActionsException(getName());
+			if (this.getActionsAvailable() <= 0)
+				throw new NoAvailableResourcesException();
 			checkSize(this.getSupplyInventory());
 			this.getSupplyInventory().get(0).use(this);
 		}
