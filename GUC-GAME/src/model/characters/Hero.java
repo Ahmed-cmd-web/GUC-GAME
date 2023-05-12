@@ -172,7 +172,7 @@ public abstract class Hero extends Character {
 		 * @throws GameActionException
 		 */
 		public void cure() throws GameActionException {
-			if (!this.isAdjacent() || this.getTarget()==null || this.getTarget().isHero())
+			if (this.getTarget()==null || !this.isAdjacent() || this.getTarget().isHero())
 				throw new InvalidTargetException();
 			this.getVaccineInventory().get(0).use(this);
 		}

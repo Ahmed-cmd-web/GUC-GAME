@@ -35,7 +35,7 @@ public class Vaccine implements Collectible {
 		newHero.setLocation(h.getTarget().getLocation());
 		Game.heroes.add(newHero);
 
-		Game.heroes.add(h);  // This line was added due to the following test:testUseMethodLogicInVaccine
+		// Game.heroes.add(h);  // This line was added due to the following test:testUseMethodLogicInVaccine
 		var cell = (CharacterCell) Game.getCell(h.getTarget().getLocation());
 		cell.setCharacter(newHero);
 		h.setActionsAvailable(h.getActionsAvailable()-1);
