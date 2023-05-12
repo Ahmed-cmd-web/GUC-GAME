@@ -106,6 +106,7 @@ public abstract class Character {
 	}
 
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
+		var isadj = this.isAdjacent();
 		if (!this.isAdjacent() || (this.target.isHero() && this.isHero()) || (!this.target.isHero() && !this.isHero()))
 			throw new InvalidTargetException();
 		this.target.setCurrentHp(this.target.getCurrentHp() - this.attackDmg);

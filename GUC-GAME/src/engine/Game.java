@@ -101,17 +101,21 @@ public class Game {
 
 
 	public static void endTurn() throws GameActionException {
-		for (Zombie zombie : zombies){
-			zombie.setAdjacentTarget();
+		for (Zombie zombie : zombies)
 			zombie.attack();
-		}
-		for (Hero h:heroes){
+		for (Cell[] cells : Game.map)
+			for (Cell cell : cells)
+				if (cell!=null)
+					cell.setVisible(false);
+		for (Hero h : heroes) {
 			h.setActionsAvailable(h.getMaxActions());
 			h.setSpecialAction(false);
 			h.setTarget(null);
 			h.updateVisibilty();
 		}
-		spawnRandomly(new CharacterCell(new Zombie()));
+		var zombie = new Zombie();
+		zombies.add(zombie);
+		spawnRandomly(new CharacterCell(zombie));
 
 	}
 
