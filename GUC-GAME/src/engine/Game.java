@@ -69,12 +69,37 @@ public class Game {
 		br.close();
 	}
 
+	public static boolean checkInv(){
+		for(Hero h: heroes)
+			if(h.getVaccineInventory().size()!=0)
+				return false;
+		return true;
+	}
+	public static boolean checkVac(){
+		for(int i=0;i<15;i++)
+			for(int j=0;j<15;j++)
+				if(map[i][j] instanceof CollectibleCell)
+					if(((CollectibleCell)map[i][j]).getCollectible() instanceof Vaccine)
+						return false;
+		return true;
+	}
+
+	public static boolean checkWin() {
+		return (heroes.size()>=5)&&checkInv()&&checkVac();
+	}
+	public static boolean checkLose() {
+		return (heroes.size()==0)||(checkInv()&&checkVac());
+	}
+	public static boolean checkGameOver(){
+		return checkWin()||checkLose();
+	}
 
 	public static void spawnRandomly(Cell c) {
 		Random r = new Random();
 		int x = r.nextInt(15);
 		int y = r.nextInt(15);
-		while (map[x][y] instanceof CharacterCell && ((CharacterCell)map[x][y]).getCharacter()!=null) {
+		while (map[x][y] instanceof CharacterCell && ((CharacterCell) map[x][y]).getCharacter() != null
+		|| map[x][y] instanceof CollectibleCell || map[x][y] instanceof TrapCell) {
 			x = r.nextInt(15);
 			y = r.nextInt(15);
 		}
@@ -116,7 +141,8 @@ public class Game {
 		var zombie = new Zombie();
 		zombies.add(zombie);
 		spawnRandomly(new CharacterCell(zombie));
-
+		for (Zombie zombie2 : zombies)
+			zombie2.setTarget(null);
 	}
 
 	public static void addZombie() {

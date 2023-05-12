@@ -15,12 +15,11 @@ public class Medic extends Hero {
 
 	@Override
 	public void useSpecial() throws GameActionException {
-		if (!this.isHero())
-			throw new InvalidTargetException("Damn it!!! This is a Zombie!😈");
+		if (this.getTarget() == null || !this.getTarget().isHero() || this.getTarget().getCurrentHp()==this.getTarget().getMaxHp())
+			throw new InvalidTargetException();
 		super.useSpecial();
+		this.setActionsAvailable(this.getActionsAvailable()-1);
 		var target = this.getTarget();
 		target.setCurrentHp(target.getMaxHp());
 	}
-
-
 }

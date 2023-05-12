@@ -2,6 +2,7 @@ package model.characters;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import engine.Game;
@@ -106,7 +107,6 @@ public abstract class Character {
 	}
 
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
-		var isadj = this.isAdjacent();
 		if (!this.isAdjacent() || (this.target.isHero() && this.isHero()) || (!this.target.isHero() && !this.isHero()))
 			throw new InvalidTargetException();
 		this.target.setCurrentHp(this.target.getCurrentHp() - this.attackDmg);
@@ -148,4 +148,5 @@ public abstract class Character {
 		}
 		return arr.toArray(new Cell[arr.size()]);
 	}
+
 }
