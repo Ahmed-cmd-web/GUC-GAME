@@ -16,6 +16,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import exceptions.GameActionException;
+import exceptions.InvalidTargetException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -105,8 +106,11 @@ public class Game {
 		map[x][y] = c;
 	}
 	public static void endTurn() throws GameActionException {
-		for (Zombie zombie : zombies)
-			zombie.attack();
+		for (Zombie zombie : zombies){
+			try {
+				zombie.attack();
+			} catch (InvalidTargetException e) {}
+		}
 		for (Cell[] cells : Game.map)
 			for (Cell cell : cells)
 				if (cell!=null)
@@ -118,6 +122,9 @@ public class Game {
 			h.updateVisibilty();
 		}
 		addZombie();
+		for (Zombie zombie : zombies)
+			zombie.setTarget(null);
+
 	}
 
 	public static void startGame(Hero h){
@@ -162,7 +169,7 @@ public class Game {
 					map[xT][yT]= new TrapCell();
 					break;
 				}
-		}			
+		}
 		while(true){
 				int xS=r.nextInt(15);
 				int yS=r.nextInt(15);
@@ -171,15 +178,15 @@ public class Game {
 					break;
 				}
 		}
-		while(true){		
+		while(true){
 				int xV=r.nextInt(15);
 				int yV=r.nextInt(15);
 				if(map[xV][yV] instanceof CharacterCell && ((CharacterCell)map[xV][yV]).getCharacter()==null){
 					map[xV][yV]= new CollectibleCell(new Vaccine());
 					break;
 				}
-		}			
-				
+		}
+
 	}
 
 	// public static void main(String[] args) {
