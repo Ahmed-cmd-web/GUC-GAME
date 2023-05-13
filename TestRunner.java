@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.junit.runner.*;
@@ -24,6 +25,7 @@ public class TestRunner {
         System.out.print("\033[H\033[2J");
         System.out.println("Total number of failures after summing all failures from all tests trials: ");
         System.out.println(lisener.numberOfFaluires);
+        System.out.println(lisener.names);
         sc.close();
     }
 
@@ -31,8 +33,11 @@ public class TestRunner {
 
     public static class ExecutionLisener extends RunListener {
         public int numberOfFaluires = 0;
+        public ArrayList<String> names = new ArrayList<String>();
         @Override
         public void testFailure(Failure failure) throws Exception {
+            names.add( failure.getTestHeader() + ":  "+ failure.getMessage());
+
             numberOfFaluires++;
         }
     }
