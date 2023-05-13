@@ -2,6 +2,7 @@ package model.characters;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import engine.Game;
@@ -147,5 +148,30 @@ public abstract class Character {
 			}
 		}
 		return arr.toArray(new Cell[arr.size()]);
+	}
+
+
+	public static void main(String[] args) {
+		var map = new Cell[15][15];
+		for (int i = 0; i < 15; i++) {
+			for (int j = 0; j < 15; j++) {
+				map[i][j] = new CharacterCell(new Fighter("ahmed"+i + " "+j, j, j, i));
+			}
+		}
+
+		var arr = new ArrayList<String>();
+		var x = 2;
+		var y = 2;
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if ((i + x) <= 14 && (j + y) <= 14 && (i + x) >= 0 && (j + y) >= 0) {
+					var cell = map[(int) (i + x)][(int) (j + y)];
+					if (cell != null)
+						arr.add(((CharacterCell)cell).getCharacter().getName());
+				}
+			}
+		}
+		// arr.toArray(new Cell[arr.size()]);
+		System.out.println(arr);
 	}
 }

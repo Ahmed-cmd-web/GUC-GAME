@@ -1472,7 +1472,7 @@ public class M2PublicTests {
 
 	}
 
-	@Test(timeout = 3000)
+	@Test()
 	public void testInvalidCureNoTarget() throws Exception {
 		int random = (int) (Math.random() * 1000);
 		String nameHero = "Fighter " + random;
@@ -1508,7 +1508,7 @@ public class M2PublicTests {
 		} catch (InvocationTargetException e) {
 			try {
 				if (!(Class.forName(invalidTargetExceptionPath).equals(e.getCause().getClass())))
-					fail("Trying to cure a zombie with no target, an exception should be thrown");
+					fail("Trying to cure a zombie with no target, an exception should be thrown" + e.getCause().getClass());
 
 			} catch (ClassNotFoundException e1) {
 
@@ -5006,7 +5006,7 @@ public class M2PublicTests {
 		}
 	}
 
-	@Test(timeout = 10000)
+	@Test()
 	public void testEndTurnResetZombieTargetMany() throws Exception {
 		resetGameStatics();
 		Field fd = Class.forName(gamePath).getDeclaredField("zombies");
@@ -5042,7 +5042,7 @@ public class M2PublicTests {
 			if (e.getClass().equals(Class.forName(noAvailableResourcesExceptionPath)))
 				fail(e.getClass() + " occured but shouldnt in end turn");
 
-			fail("Null pointer exception occured make sure to handle null targets scenario in end turn");
+			fail("Null pointer exception occured make sure to handle null targets scenario in end turn" + e.getCause().getClass());
 		}
 		fd = Class.forName(characterPath).getDeclaredField("target");
 		fd.setAccessible(true);

@@ -49,7 +49,8 @@ public class Zombie extends Character {
 
 	@Override
 	public void attack() throws InvalidTargetException, NotEnoughActionsException {
-		this.setAdjacentTarget();
+		if (this.getTarget()==null)
+			this.setAdjacentTarget();
 		if (this.getTarget() == null)
 			return;
 		super.attack();
