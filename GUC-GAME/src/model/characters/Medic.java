@@ -1,30 +1,20 @@
 package model.characters;
 
-import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
+import exceptions.NoAvailableResourcesException;
 
 public class Medic extends Hero {
-	//Heal amount  attribute - quiz idea
 
-
-	public Medic(String name, int maxHp, int attackDmg, int maxActions) {
-		super(name, maxHp, attackDmg, maxActions);
-
+	public Medic(String name, int maxHp, int attackDamage, int maxActions) {
+		super(name, maxHp, attackDamage, maxActions);
 	}
 
-
-	@Override
-	public void useSpecial() throws GameActionException {
-		if (this.getTarget() == null || !this.getTarget().isHero() || this.getTarget().getCurrentHp()==this.getTarget().getMaxHp())
-			throw new InvalidTargetException();
-		
+	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
+		if (getTarget() instanceof Zombie)
+			throw new InvalidTargetException("You can only cure fellow heroes.");
+		if (!checkDistance())
+			throw new InvalidTargetException("You are only able to heal adjacent targets.");
 		super.useSpecial();
-		this.setActionsAvailable(this.getActionsAvailable()-1);
-		var target = this.getTarget();
-		target.setCurrentHp(target.getMaxHp());
+		getTarget().setCurrentHp(getTarget().getMaxHp());
 	}
-
-
-
-
 }
