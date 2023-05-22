@@ -1,10 +1,20 @@
 package engine;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
 
 import model.characters.Explorer;
 import model.characters.Fighter;
@@ -17,6 +27,7 @@ import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import model.world.TrapCell;
+import views.StartScreen;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
 
@@ -180,4 +191,8 @@ public class Game {
 			map[x][y] = new TrapCell();
 		}
 	}
+	public static void main(String[] args) {
+		new StartScreen().setVisible(true);
+	}
+
 }
