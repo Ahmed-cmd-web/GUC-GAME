@@ -4,9 +4,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -27,6 +29,7 @@ import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import model.world.TrapCell;
+import views.HeroSelectionScreen;
 import views.StartScreen;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
@@ -191,8 +194,13 @@ public class Game {
 			map[x][y] = new TrapCell();
 		}
 	}
+
 	public static void main(String[] args) {
-		new StartScreen().setVisible(true);
+		// new StartScreen().setVisible(true);
+		// File folder = new File("GUC-Game/src/assets/heroFaces");
+		// File[] listOfFiles = folder.listFiles();
+		// System.out.println(Arrays.toString(listOfFiles));
+		new HeroSelectionScreen().setVisible(true);
 	}
 
 }

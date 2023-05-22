@@ -18,18 +18,15 @@ public class StartScreen extends JFrame {
 
     public StartScreen() {
         this.setTitle("Welcome");
-        this.setSize(650, 650);
-        // this.setMaximumSize(new Dimension(650, 650));
-        // this.setmin
+        this.setSize(960, 540);
         this.setResizable(false);
-
-        // this.getContentPane().setBackground(Color.CYAN);
-        JButton button = new JButton("Button");
-        button.setBounds(0, 0, 100, 100);
+        JButton button = new JButton("Start Game");
+        this.getContentPane().setSize(960, 540);
+        button.setBounds(this.getContentPane().getWidth()/2-50, this.getHeight()*2/3, 100, 100);
         button.setBackground(Color.YELLOW);
         this.setLayout(null);
         this.getContentPane().add(button);
-        this.playMusic();
+        // this.playMusic();
     }
 
 
