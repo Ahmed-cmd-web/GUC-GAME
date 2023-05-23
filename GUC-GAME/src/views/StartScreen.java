@@ -40,8 +40,8 @@ public class StartScreen extends JFrame {
     public void paint(Graphics g) {
         try {
             super.paintComponents(g);
-            Image image = ImageIO.read(new File("GUC-GAME/src/assets/startScreen.jpg"))
-            .getScaledInstance(this.getContentPane().getWidth(), this.getHeight(), Image.SCALE_FAST);
+            Image image = ImageIO.read(new File("GUC-GAME/src/assets/lastofus.jpg"))
+            .getScaledInstance(this.getContentPane().getWidth(), this.getHeight(), Image.SCALE_SMOOTH);
             g.drawImage(image, 0, 0, this);
         } catch (Exception e) {
             System.out.println(e.getMessage());
