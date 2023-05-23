@@ -196,7 +196,7 @@ public class Game {
 	}
 
 	public static void main(String[] args) {
-		// new StartScreen().setVisible(true);
+		// new StartScreen().setVisible(false);
 		// File folder = new File("GUC-Game/src/assets/heroFaces");
 		// File[] listOfFiles = folder.listFiles();
 		// System.out.println(Arrays.toString(listOfFiles));
