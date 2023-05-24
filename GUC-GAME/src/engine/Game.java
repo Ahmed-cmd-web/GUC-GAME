@@ -187,7 +187,12 @@ public class Game {
 	}
 
 	public static void main(String[] args) {
-
+		try {
+			loadHeroes("Heros.csv");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		var frame = new MotherFrame();
 		frame.add(new StartScreen(frame));
 		frame.add(new HeroSelectionScreen(frame));
