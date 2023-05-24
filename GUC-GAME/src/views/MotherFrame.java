@@ -16,7 +16,7 @@ public class MotherFrame extends JFrame {
     public MotherFrame() {
         setResizable(false);
         setTitle("Last of Us");
-        setSize(1000, 540);
+        setSize(1280, 720);
         layout = new CardLayout();
         getContentPane().setLayout(layout);
         playMusic();
