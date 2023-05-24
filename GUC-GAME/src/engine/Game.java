@@ -188,9 +188,8 @@ public class Game {
 
 	public static void main(String[] args) {
 		try {
-			loadHeroes("Heros.csv");
+			loadHeroes("GUC-GAME/Heros.csv");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		var frame = new MotherFrame();

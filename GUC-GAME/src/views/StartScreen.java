@@ -1,6 +1,5 @@
 package views;
 
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -56,7 +55,7 @@ public class StartScreen extends JLayeredPane {
         try {
             var image = ImageIO.read(new File("GUC-GAME/src/assets/lastofus.jpg"))
                     .getScaledInstance(this.getWidth(), this.getHeight(), Image.SCALE_SMOOTH);
-            
+
             g.drawImage(image, 0, 0, this);
 
             super.paint(g);

@@ -11,8 +11,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -24,9 +24,9 @@ import javax.swing.JLayeredPane;
 import javax.swing.border.EmptyBorder;
 
 
-public class HeroSelectionScreen extends JLayeredPane implements ActionListener{
+public class HeroSelectionScreen extends JLayeredPane implements ActionListener,MouseListener{
     private JLabel middleColumn;
-    private JLabel rightColumn;
+    private JLabel description;
     private Row heroRow = new Row("Fighters", new String[] { "Joel.png", "David.png" },this);
     private Row  heroRow2 = new Row("Explorers", new String[] {"Tess.png", "Riley.png", "Tommy.png"},this);
     private Row  heroRow3 = new Row("Medics", new String[] { "Ellie.png", "Bill.png","Henrry.png"},this);
@@ -42,7 +42,7 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         var source = ((JButton) e.getSource()).getName();
         middleColumn.setIcon(returnScaledIcon("GUC-Game/src/assets/heros/" + source.replace("png", "jpeg"), 300, 540));
-        rightColumn.setIcon(returnScaledIcon("GUC-Game/src/assets/heroDescriptions/" + source, 300, 540));
+        description.setIcon(returnScaledIcon("GUC-Game/src/assets/heroDescriptions/" + source, description.getWidth(), description.getHeight()));
     }
 
 
@@ -64,15 +64,7 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener{
         backButton.setBorderPainted(false);
         backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         backButton.setFont(new Font(Font.DIALOG, Font.ITALIC, 40));
-        backButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                backButton.setForeground(Color.red);
-            };
-
-            public void mouseExited(MouseEvent e) {
-                backButton.setForeground(Color.white);
-            };
-        });
+        backButton.addMouseListener(this);
 
 
         gbc.fill = GridBagConstraints.VERTICAL;
@@ -94,10 +86,27 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener{
         middleColumn.setSize(300, 540);
 
 
-        rightColumn = new JLabel();
-        rightColumn.setIcon(returnScaledIcon("GUC-Game/src/assets/heroDescriptions/Bill.png", 300, 540));
-        rightColumn.setSize(300, 540);
-
+        var rightColumn = new JLayeredPane();
+        rightColumn.setLayout(new GridBagLayout());
+        description = new JLabel();
+        var nextButton = new JButton("Next>", null);
+        nextButton.setForeground(Color.white);
+        nextButton.setSize(50, 100);
+        nextButton.setOpaque(false);
+        nextButton.setContentAreaFilled(false);
+        nextButton.setBorderPainted(false);
+        nextButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        nextButton.setFont(new Font(Font.DIALOG, Font.ITALIC, 40));
+        nextButton.addMouseListener(this);
+        var rightColumnGbc = new GridBagConstraints();
+        description.setSize(300, 450);
+        description.setIcon(returnScaledIcon("GUC-Game/src/assets/heroDescriptions/Bill.png", description.getWidth(), description.getHeight()));
+        rightColumnGbc.fill = GridBagConstraints.VERTICAL;
+        rightColumnGbc.gridx = 0;
+        rightColumnGbc.gridy = 0;
+        rightColumn.add(description, rightColumnGbc);
+        rightColumnGbc.gridy = 1;
+        rightColumn.add(nextButton,rightColumnGbc);
 
         this.add(leftColumn);
         this.add(middleColumn);
@@ -153,4 +162,27 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener{
             System.out.println(e.getMessage());
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        return;
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        return;
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        return;
+    }
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        ((JButton)e.getSource()).setForeground(Color.red);
+    };
+    @Override
+    public void mouseExited(MouseEvent e) {
+        ((JButton)e.getSource()).setForeground(Color.white);
+    };
 }
