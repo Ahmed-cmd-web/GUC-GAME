@@ -55,7 +55,7 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener{
         leftColumn.setLayout(new GridBagLayout());
         leftColumn.setBorder(new EmptyBorder(10, 10, 10, 10));
         leftColumn.setSize(400, 200);
-        var backButton = new JButton("Back");
+        var backButton = new JButton("<Back");
         backButton.addActionListener(e->frame.layout.previous(frame.getContentPane()));
         backButton.setForeground(Color.white);
         backButton.setSize(50, 100);
