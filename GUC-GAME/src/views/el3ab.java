@@ -21,12 +21,20 @@ public class el3ab extends Application {
 		Scene screen=new Scene(root);
 		screen.getStylesheets().add(css);
        
+		VBox heros = new VBox();
+		//heros.setTranslateX(1240);
+		heros.setPrefSize(340,897);
+		heros.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		root.getChildren().add(heros);
 		
-		StackPane actions= new StackPane();
-		actions.setPrefSize(150,1080);
+		VBox actions= new VBox();
+		actions.setTranslateX(1240);
+		actions.setPrefSize(345,897);
 		actions.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		root.getChildren().add(actions);
 		
+		
+
 		/*StackPane stats= new StackPane();
 		stats.setTranslateY(900);
 		stats.setPrefSize(1920,180);
@@ -50,7 +58,7 @@ public class el3ab extends Application {
 		
 		
 		TilePane board = new TilePane();
-		board.setTranslateX(335);
+		board.setTranslateX(340);
 
 		board.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 0 0 3;");
 		
