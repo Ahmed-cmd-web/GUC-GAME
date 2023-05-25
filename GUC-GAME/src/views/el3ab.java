@@ -50,12 +50,13 @@ public class el3ab extends Application {
 		
 		
 		TilePane board = new TilePane();
-		board.setTranslateX(360);
-		board.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 0 0 0 3;");
+		board.setTranslateX(335);
+
+		board.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 0 0 3;");
 		
 		for(int i=0;i<225;i++) {
-			Pane cell = new Pane();
-			cell.setPrefSize(80,72);
+			Button cell = new Button();
+			cell.setPrefSize(60,57);
 			cell.getStyleClass().add("gridButton");
 			board.getChildren().add(cell);
 		}
@@ -68,9 +69,9 @@ public class el3ab extends Application {
 		//BackgroundImage selectS = new BackgroundImage(selectImg, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(BackgroundSize.AUTO,BackgroundSize.AUTO , false, false, false, true));
         //board.setBackground(new Background(selectS));
         stage.setWidth(1600);
-        stage.setHeight(900);
-        stage.setFullScreen(true);
-        stage.setResizable(true);
+        stage.setHeight(896);
+        //stage.setFullScreen(true);
+        stage.setResizable(false);
         stage.setTitle("Game Map");
 		stage.setScene(screen);
         stage.show();
