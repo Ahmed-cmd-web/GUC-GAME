@@ -9,7 +9,7 @@ public class CollectibleCell extends Cell {
 
 	public CollectibleCell(Collectible collectible) {
 		this.collectible = collectible;
-		this.setCellImage(collectible instanceof Supply ?"supply.jpeg":"vaccine.jpeg");
+		this.setCellImage(collectible instanceof Supply ?"supply.png":"vaccine.png");
 	}
 
 	public Collectible getCollectible() {
