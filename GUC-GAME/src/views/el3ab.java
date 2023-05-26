@@ -38,9 +38,13 @@ public class el3ab extends Application {
 
 	@Override
     public void start(Stage stage) {
+        VBox heros = new VBox();
+		heros.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 3 3 3;");
+		heros.setPrefSize(341,897);
+
+
 
 		Game.startGame(currentHero);
-		String endName="";
         String css = this.getClass().getResource("application.css").toExternalForm();
         Pane root = new Pane();
         Scene screen = new Scene(root);
@@ -85,6 +89,11 @@ public class el3ab extends Application {
                 currentHero.attack();
                 pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
                 this.updateCellsVisibility(board);
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
             } catch (Exception e) {
                new AppPopup(e.getMessage(), stage).open();
@@ -108,6 +117,11 @@ public class el3ab extends Application {
             try {
                 currentHero.cure();
                 this.updateCellsVisibility(board);
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
             } catch (Exception e) {
                new AppPopup(e.getMessage(), stage).open();
@@ -136,6 +150,11 @@ public class el3ab extends Application {
                 if (currentHero instanceof Explorer)
                     createMap(board);
                 updateCellsVisibility(board);
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
@@ -166,6 +185,11 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.RIGHT);
                 this.updateCellsVisibility(board);
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
             } catch (Exception e) {
                new AppPopup(e.getMessage(), stage).open();
@@ -186,6 +210,11 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.DOWN);
                 updateCellsVisibility(board);
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
             } catch (Exception e) {
                 new AppPopup(e.getMessage(), stage).open();
@@ -203,9 +232,7 @@ public class el3ab extends Application {
 			left.getStyleClass().add("sc3");
         });
        	h.getChildren().add(left);
-		   left.setOnAction(event -> {
 
-		});
 
 		Button right =new Button(">");
 		right.setAlignment(Pos.CENTER);
@@ -224,6 +251,11 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.UP);
                 this.updateCellsVisibility(board);
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
             } catch (Exception e) {
               new AppPopup(e.getMessage(), stage).open();
@@ -254,6 +286,11 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.LEFT);
                 this.updateCellsVisibility(board);
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
             } catch (Exception e) {
                new AppPopup(e.getMessage(), stage).open();
@@ -265,55 +302,9 @@ public class el3ab extends Application {
 
 
 
-		VBox heros = new VBox();
-		heros.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 3 3 3;");
-		heros.setPrefSize(341,897);
-
-        for (Hero her : Game.heroes) {
-            HBox all = new HBox(3);
-            System.out.println(validateNaming(her.getName()));
-            all.setStyle("-fx-border-color:BLACK;" + "-fx-border-width: 3 0 3 3;");
-            all.getChildren().add(getScaledImage("../assets/heroFaces/" + validateNaming(her.getName()), 135, 135));
-            heros.getChildren().add(all);
-            VBox info = new VBox();
-            info.setAlignment(Pos.BASELINE_LEFT);
-
-            all.getChildren().add(info);
-            Text nameL = new Text("Name: " + her.getName());
-            nameL.setStyle("-fx-fill: white;");
-            info.getChildren().add(nameL);
-            String ty = "";
-            if (her instanceof Fighter)
-                ty = "Fighter";
-            else if (her instanceof Explorer)
-                ty = "Explorer";
-            else
-                ty = "Medic";
-
-            Text typeL = new Text("Type: " + ty);
-            typeL.setStyle("-fx-fill: white;");
-
-            info.getChildren().add(typeL);
-            Text actionsL = new Text("Actions: " + her.getActionsAvailable());
-            actionsL.setStyle("-fx-fill: white;");
-            info.getChildren().add(actionsL);
-            Text vaccineL = new Text("Vaccines: " + her.getVaccineInventory().size());
-            vaccineL.setStyle("-fx-fill: white;");
-            info.getChildren().add(vaccineL);
-            Text supplyL = new Text("Supplies: " + her.getSupplyInventory().size());
-            supplyL.setStyle("-fx-fill: white;");
-            info.getChildren().add(supplyL);
-            ProgressBar hp = new ProgressBar(her.getCurrentHp() / her.getMaxHp());
-            hp.setTranslateY(5);
-            hp.setStyle(
-                    "-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent; -fx-accent: brown ");
-            hp.setPrefSize(200, 20);
-            info.getChildren().add(hp);
-        }
-
-
+        for (Hero hero : Game.heroes)
+            heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
 		root.getChildren().add(heros);
-
 
 		Button endT =new Button("End Turn");
 		endT.setTranslateY(270);
@@ -331,16 +322,16 @@ public class el3ab extends Application {
             try {
                 Game.endTurn();
                 createMap(board);
-                System.out.println(currentHero.getCurrentHp());
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 isFinished(stage);
-                //pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
             }
         });
-
-
-        currentHero.setActionsAvailable(1000);
 
         createMap(board);
         screen.setOnKeyPressed(e -> {
@@ -361,6 +352,11 @@ public class el3ab extends Application {
                     default:
                         break;
                 }
+                root.getChildren().remove(heros);
+                heros.getChildren().clear();
+                for (Hero hero : Game.heroes)
+                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+		        root.getChildren().add(heros);
                 updateCellsVisibility(board);
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
@@ -465,19 +461,18 @@ public class el3ab extends Application {
                     for (Cell mapCell : cells)
                         if (mapCell.toString().equals(source))
                             target = mapCell;
-                if (target instanceof CharacterCell && (((CharacterCell)target).getCharacter()  instanceof Hero || ((CharacterCell) cell).getCharacter() instanceof Zombie)){
+                if (target instanceof CharacterCell && (((CharacterCell) target).getCharacter() instanceof Hero
+                        || ((CharacterCell) cell).getCharacter() instanceof Zombie)) {
                     if (currentHero instanceof Medic) {
                         if (e.getClickCount() >= 2)
                             if (((CharacterCell) target).getCharacter() instanceof Hero)
                                 currentHero = ((Hero) ((CharacterCell) target).getCharacter());
                             else
                                 currentHero.setTarget(((CharacterCell) target).getCharacter());
-                    }
-                    else if ( ((CharacterCell) cell).getCharacter() instanceof Zombie)
+                    } else if (((CharacterCell) cell).getCharacter() instanceof Zombie)
                         currentHero.setTarget(((CharacterCell) target).getCharacter());
-                    else if ((((CharacterCell)target).getCharacter()  instanceof Hero))
+                    else if ((((CharacterCell) target).getCharacter() instanceof Hero))
                         currentHero = ((Hero) ((CharacterCell) target).getCharacter());
-
                 }
 
             });
@@ -501,4 +496,53 @@ public class el3ab extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+
+
+
+
+    public class HeroPanelDetails extends HBox {
+        public HeroPanelDetails(Hero her,Hero currentHero) {
+            super(3);
+            this.setStyle("-fx-border-color:BLACK;" + "-fx-border-width: 3 0 3 3;");
+            this.getChildren().add(getScaledImage("../assets/heroFaces/" + validateNaming(her.getName()), 135, 135));
+            VBox info = new VBox();
+            info.setAlignment(Pos.BASELINE_LEFT);
+            this.getChildren().add(info);
+            Text nameL = new Text("Name: " + her.getName());
+            nameL.setStyle("-fx-fill: white;");
+            info.getChildren().add(nameL);
+            String ty = "";
+            if (her instanceof Fighter)
+                ty = "Fighter";
+            else if (her instanceof Explorer)
+                ty = "Explorer";
+            else
+                ty = "Medic";
+
+            Text isActive = new Text("Current Hero: " + currentHero.getName().equals(her.getName()));
+            isActive.setStyle("-fx-fill: white;");
+            info.getChildren().add(isActive);
+            Text typeL = new Text("Type: " + ty);
+            typeL.setStyle("-fx-fill: white;");
+            info.getChildren().add(typeL);
+            Text targetL = new Text("Current Target: " + her.getTarget());
+            targetL.setStyle("-fx-fill: white;");
+            info.getChildren().add(targetL);
+            Text actionsL = new Text("Actions: " + her.getActionsAvailable());
+            actionsL.setStyle("-fx-fill: white;");
+            info.getChildren().add(actionsL);
+            Text vaccineL = new Text("Vaccines: " + her.getVaccineInventory().size());
+            vaccineL.setStyle("-fx-fill: white;");
+            info.getChildren().add(vaccineL);
+            Text supplyL = new Text("Supplies: " + her.getSupplyInventory().size());
+            supplyL.setStyle("-fx-fill: white;");
+            info.getChildren().add(supplyL);
+            ProgressBar hp = new ProgressBar(her.getCurrentHp() / (her.getMaxHp()*1.0));
+            hp.setTranslateY(5);
+            hp.setStyle(
+                    "-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent; -fx-accent: brown ");
+            hp.setPrefSize(200, 20);
+            info.getChildren().add(hp);
+        }
+    }
 }
