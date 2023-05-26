@@ -1,6 +1,25 @@
-.gridButton{
-	-fx-background-color:transparent;
-   	-fx-border-color:BLACK;
-    -fx-border-width: 0 3 3 0;
-	-fx-background-image:url('GUC-GAME/src/assets/heroFaces/Bill.png') ;
+.gridButton {
+  -fx-background-color: grey;
+  -fx-border-color: BLACK;
+  -fx-border-width: 0 3 3 0;
+}
+.sc3 {
+  -fx-border-width: 5 5 5 5;
+  -fx-border-color: Brown;
+  -fx-background-color: GOLD;
+  -fx-text-fill: Brown;
+}
+.sc4 {
+  -fx-border-width: 5 5 5 5;
+  -fx-border-color: Gold;
+  -fx-background-color: Brown;
+  -fx-text-fill: Gold;
+}
+.endT {
+  -fx-background-color: Brown;
+  -fx-text-fill: White;
+}
+.endTexit {
+  -fx-background-color: Brown;
+  -fx-text-fill: Gold;
 }
