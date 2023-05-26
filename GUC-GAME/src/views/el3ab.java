@@ -14,12 +14,14 @@ import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import utils.AppPopup;
+import javafx.scene.Cursor;
 //import model.characters.Hero;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.scene.paint.Color;
@@ -48,6 +50,11 @@ public class el3ab extends Application {
         board.setTranslateX(340);
         board.setStyle("-fx-border-color:BLACK;" + "-fx-border-width: 3 3 3 3;");
 
+        ProgressBar pb = new ProgressBar(currentHero.getCurrentHp()/currentHero.getMaxHp());
+	    pb.setStyle("-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent;");
+        pb.setStyle("-fx-accent: RED ");
+
+
 		VBox actions= new VBox(8);
 		actions.setAlignment(Pos.BASELINE_CENTER);
 		actions.setTranslateX(1240);
@@ -69,8 +76,14 @@ public class el3ab extends Application {
 			attack.getStyleClass().add("sc3");
         });
        	actions.getChildren().add(attack);
-		attack.setOnAction(event -> {
-
+        attack.setOnMouseClicked(event -> {
+            try {
+                currentHero.attack();
+                pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
+                this.updateCellsVisibility(board);
+            } catch (Exception e) {
+               new AppPopup(e.getMessage(), stage).open();
+            }
 		});
 
 		Button cure =new Button("Cure");
@@ -86,8 +99,16 @@ public class el3ab extends Application {
             cure.getStyleClass().remove("sc4");;
 			cure.getStyleClass().add("sc3");
         });
+        cure.setOnMouseClicked(event -> {
+            try {
+                currentHero.cure();
+                this.updateCellsVisibility(board);
+            } catch (Exception e) {
+               new AppPopup(e.getMessage(), stage).open();
+            }
+		});
        	actions.getChildren().add(cure);
-		
+
 
 		Button special =new Button("Use Special");
 		special.setAlignment(Pos.CENTER);
@@ -227,10 +248,6 @@ public class el3ab extends Application {
 
         move.getChildren().add(down);
 
-        ProgressBar pb = new ProgressBar(currentHero.getCurrentHp()/currentHero.getMaxHp());
-
-	    pb.setStyle("-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent;");
-        pb.setStyle("-fx-accent: RED ");
 
 
 		Button endT =new Button("End Turn");
@@ -357,14 +374,30 @@ public class el3ab extends Application {
             }
             else
                 img = getScaledImage("../assets/Darkgrass.png", 60, 57);
+
             img.setEffect(new DropShadow(2, Color.BLACK));
+            img.setId(cell.toString());
+            img.addEventFilter(MouseEvent.MOUSE_CLICKED, e ->{
+                var source = ((ImageView) e.getSource()).getId();
+                Cell target=null;
+                for (Cell[] cells : Game.map)
+                    for (Cell mapCell : cells)
+                        if (mapCell.toString().equals(source))
+                            target = mapCell;
+
+                if (target instanceof CharacterCell && (((CharacterCell)target).getCharacter()  instanceof Hero || ((CharacterCell) cell).getCharacter() instanceof Zombie))
+                    currentHero.setTarget(((CharacterCell) target).getCharacter());
+                else
+                    currentHero.setTarget(null);
+            });
+            // img.setCursor(Cursor.CROSSHAIR);
             return img;
     }
 
     private String validateNaming(String text) {
         if (text.contains(" "))
             return text.split(" ")[0] + ".png";
-        return text;
+        return text+".png";
     }
 
     private ImageView getScaledImage(String path, int width, int height) {
