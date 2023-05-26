@@ -2,4 +2,5 @@
 	-fx-background-color:transparent;
    	-fx-border-color:BLACK;
     -fx-border-width: 0 3 3 0;
+	-fx-background-image:url('GUC-GAME/src/assets/heroFaces/Bill.png') ;
 }
