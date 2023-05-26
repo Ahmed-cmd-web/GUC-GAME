@@ -8,6 +8,8 @@ import engine.Game;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import model.characters.Direction;
+import model.characters.Explorer;
+import model.characters.Fighter;
 import model.characters.Hero;
 import model.characters.Zombie;
 import model.world.Cell;
@@ -30,18 +32,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Stop;
 
 public class el3ab extends Application {
-    private Hero currentHero = Game.currentHero;
+	private Hero currentHero = Game.currentHero;
 
 
 	@Override
     public void start(Stage stage) {
 
+		Game.startGame(currentHero);
 
         String css = this.getClass().getResource("application.css").toExternalForm();
         Pane root = new Pane();
         Scene screen = new Scene(root);
         BackgroundImage myBI= new BackgroundImage(new Image(getClass().getResourceAsStream("../assets/startScreen.jpg")),
-        BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+		BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
           BackgroundSize.DEFAULT);
         root.setBackground(new Background(myBI));
         screen.getStylesheets().add(css);
@@ -250,6 +253,56 @@ public class el3ab extends Application {
 
 
 
+
+
+
+
+
+
+
+		VBox heros = new VBox();
+		heros.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 3 3 3;");
+		heros.setPrefSize(341,897);
+
+		System.out.println(Game.heroes);
+		for(Hero her:Game.heroes) {
+
+
+			HBox all =new HBox(3);
+			System.out.println(validateNaming(her.getName()));
+			all.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 0 3 3;");
+			all.getChildren().add(getScaledImage("../assets/heroFaces/" + validateNaming(her.getName()), 135, 135));
+			heros.getChildren().add(all);
+			VBox info =new VBox();
+			info.setAlignment(Pos.BASELINE_LEFT);
+			all.getChildren().add(info);
+			Text nameL= new Text("Name: "+her.getName());
+			info.getChildren().add(nameL);
+			String ty="";
+			if (her instanceof Fighter)
+				ty="Fighter";
+			else if (her instanceof Explorer)
+				ty="Explorer";
+			else
+				ty="Medic";
+			Text typeL=new Text("Type: "+ty);
+			info.getChildren().add(typeL);
+			Text actionsL=new Text("Actions: "+her.getActionsAvailable());
+			info.getChildren().add(actionsL);
+			Text vaccineL=new Text("Vaccines: "+her.getVaccineInventory().size());
+			info.getChildren().add(vaccineL);
+			Text supplyL=new Text("Supplies: "+her.getSupplyInventory().size());
+			info.getChildren().add(supplyL);
+			ProgressBar hp = new ProgressBar(her.getCurrentHp()/her.getMaxHp());
+			hp.setTranslateY(5);
+		    hp.setStyle("-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent; -fx-accent: brown ");
+			hp.setPrefSize(200, 20);
+			info.getChildren().add(hp);
+
+		}
+		root.getChildren().add(heros);
+
+
 		Button endT =new Button("End Turn");
 		endT.setTranslateY(270);
 		endT.setFont(Font.font("Old English Text MT",40));
@@ -266,38 +319,15 @@ public class el3ab extends Application {
             try {
                 Game.endTurn();
                 createMap(board);
-                pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
+                //pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
             }
         });
 
-		VBox heros = new VBox();
-		heros.setPrefSize(341,897);
-		heros.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-		root.getChildren().add(heros);
-
-		HBox all =new HBox();
-		heros.getChildren().add(all);
-
-		VBox info =new VBox();
-		info.setAlignment(Pos.BASELINE_LEFT);
-		all.getChildren().add(info);
-
-
-	    Stop[] stops = new Stop[] { new Stop(0, Color.GREEN), new Stop(1, Color.BLUE)};
-	    // LinearGradient linear = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
-
-
-
-
-
-		pb.setPrefSize(200, 20);
-		info.getChildren().add(pb);
 
         currentHero.setActionsAvailable(1000);
 
-        Game.startGame(currentHero);
         createMap(board);
         screen.setOnKeyPressed(e -> {
             try {
@@ -325,6 +355,45 @@ public class el3ab extends Application {
 
 
         root.getChildren().add(board);
+
+
+
+
+		StackPane endroot = new StackPane();
+		Scene endScene = new Scene(endroot);
+		endScene.getStylesheets().add(css);
+		String endName="";
+		if(Game.checkGameOver()&&Game.checkWin())
+			endName="victory.png";
+		else
+			endName="defeat.png";
+		Image endImg = new Image(endName);
+		BackgroundImage endS = new BackgroundImage(endImg, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(BackgroundSize.AUTO,BackgroundSize.AUTO , false, false, false, true));
+        endroot.setBackground(new Background(endS));
+
+		Button quit2=new Button();
+		quit2.setText("Quit");
+		quit2.setFont(Font.font("Old English Text MT",100));
+		quit2.setTranslateX(-680);
+		quit2.setTranslateY(350);
+		quit2.getStyleClass().add("sc1");
+		quit2.setOnMouseEntered(event -> {
+			quit2.setStyle("-fx-text-fill: brown");
+        });
+		quit2.setOnMouseExited(event -> {
+			quit2.setStyle("-fx-text-fill: White");
+        });
+		endroot.getChildren().add(quit2);
+		quit2.setOnAction(event ->{
+			javafx.application.Platform.exit();
+		});
+
+
+
+
+
+
+
 
 
         stage.setWidth(1600);
