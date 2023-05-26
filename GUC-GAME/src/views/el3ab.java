@@ -17,7 +17,6 @@ import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import utils.AppPopup;
-import javafx.scene.Cursor;
 //import model.characters.Hero;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -30,7 +29,6 @@ import javafx.scene.text.*;
 import javafx.scene.paint.Color;
 import javafx.application.Application;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Stop;
 
 public class el3ab extends Application {
 	private Hero currentHero = Game.currentHero;
@@ -183,7 +181,10 @@ public class el3ab extends Application {
         });
         up.setOnMouseClicked(event -> {
             try {
+                int currentHp = currentHero.getCurrentHp();
                 currentHero.move(Direction.RIGHT);
+                if (currentHero.getCurrentHp() < currentHp)
+                    new AppPopup("you stepped on a trap!", stage).open();
                 this.updateCellsVisibility(board);
                 root.getChildren().remove(heros);
                 heros.getChildren().clear();
@@ -208,7 +209,10 @@ public class el3ab extends Application {
         left.getStyleClass().add("sc3");
         left.setOnMouseClicked(event -> {
             try {
+                int currentHp = currentHero.getCurrentHp();
                 currentHero.move(Direction.DOWN);
+                if (currentHero.getCurrentHp() < currentHp)
+                    new AppPopup("you stepped on a trap!", stage).open();
                 updateCellsVisibility(board);
                 root.getChildren().remove(heros);
                 heros.getChildren().clear();
@@ -249,7 +253,10 @@ public class el3ab extends Application {
         });
         right.setOnMouseClicked(event -> {
             try {
+                int currentHp = currentHero.getCurrentHp();
                 currentHero.move(Direction.UP);
+                if (currentHero.getCurrentHp() < currentHp)
+                    new AppPopup("you stepped on a trap!", stage).open();
                 this.updateCellsVisibility(board);
                 root.getChildren().remove(heros);
                 heros.getChildren().clear();
@@ -284,7 +291,10 @@ public class el3ab extends Application {
         });
         down.setOnMouseClicked(event -> {
             try {
+                int currentHp = currentHero.getCurrentHp();
                 currentHero.move(Direction.LEFT);
+                if (currentHero.getCurrentHp() < currentHp)
+                    new AppPopup("you stepped on a trap!", stage).open();
                 this.updateCellsVisibility(board);
                 root.getChildren().remove(heros);
                 heros.getChildren().clear();
@@ -336,6 +346,7 @@ public class el3ab extends Application {
         createMap(board);
         screen.setOnKeyPressed(e -> {
             try {
+                int currentHp = currentHero.getCurrentHp();
                 switch (e.getCode()) {
                     case A:
                         currentHero.move(Direction.DOWN);
@@ -352,6 +363,8 @@ public class el3ab extends Application {
                     default:
                         break;
                 }
+                if (currentHero.getCurrentHp() < currentHp)
+                    new AppPopup("you stepped on a trap!", stage).open();
                 root.getChildren().remove(heros);
                 heros.getChildren().clear();
                 for (Hero hero : Game.heroes)
