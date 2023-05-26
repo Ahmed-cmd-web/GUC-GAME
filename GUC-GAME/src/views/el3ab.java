@@ -11,17 +11,20 @@ import model.characters.Direction;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Hero;
+import model.characters.Medic;
 import model.characters.Zombie;
 import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import utils.AppPopup;
+import javafx.scene.Cursor;
 //import model.characters.Hero;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.scene.paint.Color;
@@ -31,13 +34,13 @@ import javafx.scene.paint.Stop;
 
 public class el3ab extends Application {
 	private Hero currentHero = Game.currentHero;
-	
-	
+
+
 	@Override
     public void start(Stage stage) {
-		
-		Game.startGame(currentHero);
 
+		Game.startGame(currentHero);
+		String endName="";
         String css = this.getClass().getResource("application.css").toExternalForm();
         Pane root = new Pane();
         Scene screen = new Scene(root);
@@ -50,6 +53,11 @@ public class el3ab extends Application {
         GridPane board = new GridPane();
         board.setTranslateX(340);
         board.setStyle("-fx-border-color:BLACK;" + "-fx-border-width: 3 3 3 3;");
+
+        ProgressBar pb = new ProgressBar(currentHero.getCurrentHp()/currentHero.getMaxHp());
+	    pb.setStyle("-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent;");
+        pb.setStyle("-fx-accent: RED ");
+
 
 		VBox actions= new VBox(8);
 		actions.setAlignment(Pos.BASELINE_CENTER);
@@ -72,8 +80,15 @@ public class el3ab extends Application {
 			attack.getStyleClass().add("sc3");
         });
        	actions.getChildren().add(attack);
-		attack.setOnAction(event -> {
-
+        attack.setOnMouseClicked(event -> {
+            try {
+                currentHero.attack();
+                pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
+                this.updateCellsVisibility(board);
+                isFinished(stage);
+            } catch (Exception e) {
+               new AppPopup(e.getMessage(), stage).open();
+            }
 		});
 
 		Button cure =new Button("Cure");
@@ -89,8 +104,17 @@ public class el3ab extends Application {
             cure.getStyleClass().remove("sc4");;
 			cure.getStyleClass().add("sc3");
         });
+        cure.setOnMouseClicked(event -> {
+            try {
+                currentHero.cure();
+                this.updateCellsVisibility(board);
+                isFinished(stage);
+            } catch (Exception e) {
+               new AppPopup(e.getMessage(), stage).open();
+            }
+		});
        	actions.getChildren().add(cure);
-		
+
 
 		Button special =new Button("Use Special");
 		special.setAlignment(Pos.CENTER);
@@ -106,9 +130,17 @@ public class el3ab extends Application {
 			special.getStyleClass().add("sc3");
         });
        	actions.getChildren().add(special);
-		   special.setOnAction(event -> {
-
-		});
+        special.setOnMouseClicked(e -> {
+            try {
+                currentHero.useSpecial();
+                if (currentHero instanceof Explorer)
+                    createMap(board);
+                updateCellsVisibility(board);
+                isFinished(stage);
+            } catch (Exception err) {
+                new AppPopup(err.getMessage(), stage).open();
+            }
+        });
 
 
 		VBox move = new VBox();
@@ -134,15 +166,13 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.RIGHT);
                 this.updateCellsVisibility(board);
+                isFinished(stage);
             } catch (Exception e) {
                new AppPopup(e.getMessage(), stage).open();
             }
 
         });
        	move.getChildren().add(up);
-		   up.setOnAction(event -> {
-
-		});
 
 		HBox h = new HBox(51);
 		h.setAlignment(Pos.CENTER);
@@ -156,6 +186,7 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.DOWN);
                 updateCellsVisibility(board);
+                isFinished(stage);
             } catch (Exception e) {
                 new AppPopup(e.getMessage(), stage).open();
 
@@ -193,6 +224,7 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.UP);
                 this.updateCellsVisibility(board);
+                isFinished(stage);
             } catch (Exception e) {
               new AppPopup(e.getMessage(), stage).open();
 
@@ -222,63 +254,64 @@ public class el3ab extends Application {
             try {
                 currentHero.move(Direction.LEFT);
                 this.updateCellsVisibility(board);
+                isFinished(stage);
             } catch (Exception e) {
                new AppPopup(e.getMessage(), stage).open();
             }
-			
+
         });
-		
+
         move.getChildren().add(down);
-		
 
 
 
-
-
-
-
-
-		
 		VBox heros = new VBox();
 		heros.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 3 3 3;");
 		heros.setPrefSize(341,897);
-		
-		System.out.println(Game.heroes);
-		for(Hero her:Game.heroes) {
-			
-			
-			HBox all =new HBox(3);
-			System.out.println(validateNaming(her.getName()));
-			all.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 0 3 3;");
-			all.getChildren().add(getScaledImage("../assets/heroFaces/" + validateNaming(her.getName()), 135, 135));
-			heros.getChildren().add(all);
-			VBox info =new VBox();
-			info.setAlignment(Pos.BASELINE_LEFT);
-			all.getChildren().add(info);
-			Text nameL= new Text("Name: "+her.getName());
-			info.getChildren().add(nameL);
-			String ty="";
-			if (her instanceof Fighter)
-				ty="Fighter";
-			else if (her instanceof Explorer)
-				ty="Explorer";
-			else
-				ty="Medic";
-			Text typeL=new Text("Type: "+ty);
-			info.getChildren().add(typeL);
-			Text actionsL=new Text("Actions: "+her.getActionsAvailable());
-			info.getChildren().add(actionsL);			
-			Text vaccineL=new Text("Vaccines: "+her.getVaccineInventory().size());
-			info.getChildren().add(vaccineL);
-			Text supplyL=new Text("Supplies: "+her.getSupplyInventory().size());
-			info.getChildren().add(supplyL);
-			ProgressBar hp = new ProgressBar(her.getCurrentHp()/her.getMaxHp());   
-			hp.setTranslateY(5);
-		    hp.setStyle("-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent; -fx-accent: brown ");
-			hp.setPrefSize(200, 20);
-			info.getChildren().add(hp);
-			
-		}
+
+        for (Hero her : Game.heroes) {
+            HBox all = new HBox(3);
+            System.out.println(validateNaming(her.getName()));
+            all.setStyle("-fx-border-color:BLACK;" + "-fx-border-width: 3 0 3 3;");
+            all.getChildren().add(getScaledImage("../assets/heroFaces/" + validateNaming(her.getName()), 135, 135));
+            heros.getChildren().add(all);
+            VBox info = new VBox();
+            info.setAlignment(Pos.BASELINE_LEFT);
+
+            all.getChildren().add(info);
+            Text nameL = new Text("Name: " + her.getName());
+            nameL.setStyle("-fx-fill: white;");
+            info.getChildren().add(nameL);
+            String ty = "";
+            if (her instanceof Fighter)
+                ty = "Fighter";
+            else if (her instanceof Explorer)
+                ty = "Explorer";
+            else
+                ty = "Medic";
+
+            Text typeL = new Text("Type: " + ty);
+            typeL.setStyle("-fx-fill: white;");
+
+            info.getChildren().add(typeL);
+            Text actionsL = new Text("Actions: " + her.getActionsAvailable());
+            actionsL.setStyle("-fx-fill: white;");
+            info.getChildren().add(actionsL);
+            Text vaccineL = new Text("Vaccines: " + her.getVaccineInventory().size());
+            vaccineL.setStyle("-fx-fill: white;");
+            info.getChildren().add(vaccineL);
+            Text supplyL = new Text("Supplies: " + her.getSupplyInventory().size());
+            supplyL.setStyle("-fx-fill: white;");
+            info.getChildren().add(supplyL);
+            ProgressBar hp = new ProgressBar(her.getCurrentHp() / her.getMaxHp());
+            hp.setTranslateY(5);
+            hp.setStyle(
+                    "-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent; -fx-accent: brown ");
+            hp.setPrefSize(200, 20);
+            info.getChildren().add(hp);
+        }
+
+
 		root.getChildren().add(heros);
 
 
@@ -298,6 +331,8 @@ public class el3ab extends Application {
             try {
                 Game.endTurn();
                 createMap(board);
+                System.out.println(currentHero.getCurrentHp());
+                isFinished(stage);
                 //pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
@@ -336,45 +371,6 @@ public class el3ab extends Application {
         root.getChildren().add(board);
 
 
-
-
-		StackPane endroot = new StackPane();
-		Scene endScene = new Scene(endroot);
-		endScene.getStylesheets().add(css);
-		String endName="";
-		if(Game.checkGameOver()&&Game.checkWin())
-			endName="victory.png";
-		else
-			endName="defeat.png";
-		Image endImg = new Image(endName);
-		BackgroundImage endS = new BackgroundImage(endImg, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(BackgroundSize.AUTO,BackgroundSize.AUTO , false, false, false, true));
-        endroot.setBackground(new Background(endS));
-		
-		Button quit2=new Button();
-		quit2.setText("Quit");
-		quit2.setFont(Font.font("Old English Text MT",100));
-		quit2.setTranslateX(-680);
-		quit2.setTranslateY(350);
-		quit2.getStyleClass().add("sc1");
-		quit2.setOnMouseEntered(event -> {
-			quit2.setStyle("-fx-text-fill: brown");
-        });
-		quit2.setOnMouseExited(event -> {
-			quit2.setStyle("-fx-text-fill: White");
-        });
-		endroot.getChildren().add(quit2);
-		quit2.setOnAction(event ->{
-			javafx.application.Platform.exit();
-		});
-
-
-
-
-
-
-
-
-
         stage.setWidth(1600);
         stage.setHeight(896);
         stage.setResizable(false);
@@ -382,6 +378,43 @@ public class el3ab extends Application {
         stage.setScene(screen);
         stage.show();
 
+    }
+
+    private void isFinished(Stage stage) {
+        String endName="";
+        String css = this.getClass().getResource("application.css").toExternalForm();
+        if (Game.checkGameOver()) {
+            if (Game.checkWin())
+            endName = "../assets/finalScreen/victory.png";
+            else
+                endName = "../assets/finalScreen/defeat.png";
+            StackPane endroot = new StackPane();
+            Scene endScene = new Scene(endroot);
+            endScene.getStylesheets().add(css);
+            Image endImg = new Image(getClass().getResourceAsStream(endName));
+            BackgroundImage endS = new BackgroundImage(endImg, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.DEFAULT,
+                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true));
+            endroot.setBackground(new Background(endS));
+
+            Button quit2 = new Button();
+            quit2.setText("Quit");
+            quit2.setFont(Font.font("Old English Text MT", 100));
+            quit2.setTranslateX(-680);
+            quit2.setTranslateY(350);
+            quit2.getStyleClass().add("sc1");
+            quit2.setOnMouseEntered(event -> {
+                quit2.setStyle("-fx-text-fill: brown");
+            });
+            quit2.setOnMouseExited(event -> {
+                quit2.setStyle("-fx-text-fill: White");
+            });
+            endroot.getChildren().add(quit2);
+            quit2.setOnAction(event -> {
+                javafx.application.Platform.exit();
+            });
+            stage.setScene(endScene);
+        }
     }
 
 
@@ -422,14 +455,39 @@ public class el3ab extends Application {
             }
             else
                 img = getScaledImage("../assets/Darkgrass.png", 60, 57);
+
             img.setEffect(new DropShadow(2, Color.BLACK));
+            img.setId(cell.toString());
+            img.addEventFilter(MouseEvent.MOUSE_CLICKED, e ->{
+                var source = ((ImageView) e.getSource()).getId();
+                Cell target=null;
+                for (Cell[] cells : Game.map)
+                    for (Cell mapCell : cells)
+                        if (mapCell.toString().equals(source))
+                            target = mapCell;
+                if (target instanceof CharacterCell && (((CharacterCell)target).getCharacter()  instanceof Hero || ((CharacterCell) cell).getCharacter() instanceof Zombie)){
+                    if (currentHero instanceof Medic) {
+                        if (e.getClickCount() >= 2)
+                            if (((CharacterCell) target).getCharacter() instanceof Hero)
+                                currentHero = ((Hero) ((CharacterCell) target).getCharacter());
+                            else
+                                currentHero.setTarget(((CharacterCell) target).getCharacter());
+                    }
+                    else if ( ((CharacterCell) cell).getCharacter() instanceof Zombie)
+                        currentHero.setTarget(((CharacterCell) target).getCharacter());
+                    else if ((((CharacterCell)target).getCharacter()  instanceof Hero))
+                        currentHero = ((Hero) ((CharacterCell) target).getCharacter());
+
+                }
+
+            });
             return img;
     }
 
     private String validateNaming(String text) {
         if (text.contains(" "))
             return text.split(" ")[0] + ".png";
-        return text;
+        return text+".png";
     }
 
     private ImageView getScaledImage(String path, int width, int height) {
