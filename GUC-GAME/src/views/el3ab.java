@@ -1,6 +1,5 @@
 package views;
 import javafx.scene.text.Font;
-import engine.Game;
 import javafx.application.*;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -8,12 +7,17 @@ import javafx.stage.Stage;
 //import model.characters.Hero;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.application.Application;  
+import javafx.scene.layout.VBox;   
+import javafx.scene.paint.CycleMethod;  
+import javafx.scene.paint.LinearGradient;  
+import javafx.scene.paint.Stop;  
+import javafx.scene.shape.Rectangle; 
 
 public class el3ab extends Application {
 	@Override
@@ -24,11 +28,7 @@ public class el3ab extends Application {
 		Scene screen=new Scene(root);
 		screen.getStylesheets().add(css);
        
-		VBox heros = new VBox();
-		//heros.setTranslateX(1240);
-		heros.setPrefSize(340,897);
-		heros.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-		root.getChildren().add(heros);
+		
 		
 		VBox actions= new VBox(8);
 		actions.setAlignment(Pos.BASELINE_CENTER);
@@ -90,6 +90,9 @@ public class el3ab extends Application {
 		   special.setOnAction(event -> {
 			
 		});
+		// Image img = new Image("visibleGrass.jpg");
+		// ImageView iv = new ImageView(img);
+		// //special.setGraphic(iv);
 
 		VBox move = new VBox();
 		move.setTranslateY(-100);
@@ -190,35 +193,70 @@ public class el3ab extends Application {
 			
 		});
 		
+		//Fighter f= new Fighter("5anzeer", 200, 40, 1000);
+		//Game.startGame(f);
 		
 		
 		GridPane board = new GridPane();
 		board.setTranslateX(340);
-
-		board.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 0 0 3;");
-		
-		for(int i=0;i<225;i++) {
-			Button cell = new Button();
-			cell.setPrefSize(60,57);
-			cell.getStyleClass().add("gridButton");
-			board.getChildren().add(cell);
+		board.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 3 3 3;");
+		Image img = new Image("visibleGrass.jpg",60,57,true,true);
+		for(int i=0;i<15;i++){
+			for(int j=0;j<15;j++){
+				Button cell = new Button();
+				cell.getStyleClass().add("gridButton");
+				cell.setPrefSize(60,57);
+				cell.setMinSize(60, 57);
+        		cell.setMaxSize(60, 57);
+				cell.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 1 1 1 1;");
+				board.add(cell, i, j);
+				//if(Game.map[i][j].isVisible()){
+					//cell.setStyle("-fx-background-color:green;");
+					//var imgV =new ImageView(img);
+					//imgV.setFitWidth(57);
+					//imgV.setFitWidth(60);
+					//imgV.setPreserveRatio(true);
+					//cell.setGraphic(imgV);
+					
+				//}
+			}
 		}
-		board.setPrefColumns(15);
-		board.setPrefRows(15);
 		root.getChildren().add(board);
 		
-		// for(int i=0;i<15;i++){
-		// 	for(int j=0;j<15;j++){
-		// 		Button button = new Button();
-		// 		if(Game.map[i][j].isVisible()){
-		// 			Image img = new Image("visibleGrass.jpg");
-		// 			ImageView visImg = new ImageView(img);
-		// 			//button.setBackground(img);
-		// 			button.setGraphic(visImg);
-		// 			board.add(button, i, j);
-		// 		}
-		// 	}
-		// }
+		
+		VBox heros = new VBox();
+		heros.setPrefSize(341,897);
+		heros.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+		root.getChildren().add(heros);
+		
+		HBox all =new HBox();
+		heros.getChildren().add(all);
+		
+		VBox info =new VBox();
+		info.setAlignment(Pos.BASELINE_LEFT);
+		all.getChildren().add(info);
+		
+		
+	    Stop[] stops = new Stop[] { new Stop(0, Color.GREEN), new Stop(1, Color.BLUE)};  
+	    LinearGradient linear = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, stops);
+		
+	    ProgressBar pb = new ProgressBar(100);
+	   
+	    pb.setStyle("-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent;");
+        //pb.lookup(".bar").setStyle("-fx-background-color: transparent;");
+       // pb.lookup(".track").setStyle("-fx-background-color: transparent;");
+        pb.setProgress(0.7); // Set the progress value (0.0 to 1.0)
+        pb.setStyle("-fx-accent: RED ");
+        
+        
+        
+		pb.setPrefSize(200, 20);
+		info.getChildren().add(pb);
+		
+		
+		
+		
+		
 		
 		//Image selectImg = new Image("fog.jpg");
 		//BackgroundImage selectS = new BackgroundImage(selectImg, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(BackgroundSize.AUTO,BackgroundSize.AUTO , false, false, false, true));
@@ -230,9 +268,7 @@ public class el3ab extends Application {
         stage.setTitle("Game Map");
 		stage.setScene(screen);
         stage.show();
-        
 	}
-	
 	
 	public static void main(String[] args) {
 		launch(args);

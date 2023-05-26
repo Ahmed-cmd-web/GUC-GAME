@@ -1,5 +1,5 @@
 .gridButton{
-	-fx-background-color:transparent;
+	-fx-background-color:grey;
    	-fx-border-color:BLACK;
     -fx-border-width: 0 3 3 0;
 }
