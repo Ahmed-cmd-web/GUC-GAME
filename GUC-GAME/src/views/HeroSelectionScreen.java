@@ -24,12 +24,17 @@ import javax.swing.JLayeredPane;
 import javax.swing.border.EmptyBorder;
 
 
+import engine.Game;
+import javafx.application.Application;
+import model.characters.Hero;
+
+
 public class HeroSelectionScreen extends JLayeredPane implements ActionListener,MouseListener{
     private JLabel middleColumn;
     private JLabel description;
     private Row heroRow = new Row("Fighters", new String[] { "Joel.png", "David.png" },this);
     private Row  heroRow2 = new Row("Explorers", new String[] {"Tess.png", "Riley.png", "Tommy.png"},this);
-    private Row  heroRow3 = new Row("Medics", new String[] { "Ellie.png", "Bill.png","Henrry.png"},this);
+    private Row  heroRow3 = new Row("Medics", new String[] { "Ellie.png", "Bill.png","Henry.png"},this);
 
 
 
@@ -42,13 +47,18 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
     public void actionPerformed(ActionEvent e) {
         var source = ((JButton) e.getSource()).getName();
         middleColumn.setIcon(returnScaledIcon("GUC-Game/src/assets/heros/" + source.replace("png", "jpeg"), 300, 540));
-        description.setIcon(returnScaledIcon("GUC-Game/src/assets/heroDescriptions/" + source, description.getWidth(), description.getHeight()));
+        description.setIcon(returnScaledIcon("GUC-Game/src/assets/heroDescriptions/" + source, description.getWidth(),
+                description.getHeight()));
+
+        for (Hero hero : Game.availableHeroes)
+            if (hero.getName().contains(source.replace(".png", "")))
+                Game.currentHero = hero;
     }
 
 
     public HeroSelectionScreen(MotherFrame frame) {
         this.setLayout(new GridLayout(1, 3, 0, 0));
-
+        Game.currentHero=Game.availableHeroes.get(5);
 
         var leftColumn = new JLayeredPane();
         var gbc = new GridBagConstraints();
@@ -98,6 +108,11 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
         nextButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         nextButton.setFont(new Font(Font.DIALOG, Font.ITALIC, 40));
         nextButton.addMouseListener(this);
+        nextButton.addActionListener(e -> {
+            frame.setVisible(false);
+            frame.dispose();
+            Application.launch(el3ab.class);
+        });
         var rightColumnGbc = new GridBagConstraints();
         description.setSize(300, 450);
         description.setIcon(returnScaledIcon("GUC-Game/src/assets/heroDescriptions/Bill.png", description.getWidth(), description.getHeight()));
@@ -165,7 +180,7 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        return;
+
     }
 
     @Override

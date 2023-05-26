@@ -19,7 +19,8 @@ public class MotherFrame extends JFrame {
         setSize(1280, 720);
         layout = new CardLayout();
         getContentPane().setLayout(layout);
-        playMusic();
+        // playMusic();
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
 
@@ -28,11 +29,7 @@ public class MotherFrame extends JFrame {
         return super.getContentPane().add(comp);
     }
 
-    private void playMusic() {
-        var player = new MP3Player(new File("GUC-GAME/src/assets/gameMusic.mp3"));
-        player.play();
-        player.setRepeat(true);
-    }
+
 
 
 }
