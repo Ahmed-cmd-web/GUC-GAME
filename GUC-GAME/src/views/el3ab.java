@@ -2,11 +2,12 @@ package views;
 import javafx.scene.text.Font;
 
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.Map;
 
 import engine.Game;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.characters.Direction;
 import model.characters.Explorer;
 import model.characters.Fighter;
@@ -17,38 +18,40 @@ import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import utils.AppPopup;
-//import model.characters.Hero;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import javafx.scene.paint.Color;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.scene.layout.VBox;
 
 public class el3ab extends Application {
 	private Hero currentHero = Game.currentHero;
-
+    private Map<KeyCode,Direction> keyMappings = Map.of(
+                        KeyCode.A, Direction.DOWN,
+                        KeyCode.W, Direction.RIGHT,
+                        KeyCode.D, Direction.UP,
+                        KeyCode.S, Direction.LEFT
+                    );
 
 	@Override
     public void start(Stage stage) {
-        VBox heros = new VBox();
-		heros.setStyle("-fx-border-color:BLACK;"+"-fx-border-width: 3 3 3 3;");
-		heros.setPrefSize(341,897);
 
-
-
-		Game.startGame(currentHero);
+        Game.startGame(currentHero);
         String css = this.getClass().getResource("application.css").toExternalForm();
         Pane root = new Pane();
         Scene screen = new Scene(root);
-        BackgroundImage myBI= new BackgroundImage(new Image(getClass().getResourceAsStream("../assets/startScreen.jpg")),
-		BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
-          BackgroundSize.DEFAULT);
+        BackgroundImage myBI = new BackgroundImage(
+                new Image(getClass().getResourceAsStream("../assets/startScreen.jpg")),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
         root.setBackground(new Background(myBI));
         screen.getStylesheets().add(css);
 
@@ -56,287 +59,188 @@ public class el3ab extends Application {
         board.setTranslateX(340);
         board.setStyle("-fx-border-color:BLACK;" + "-fx-border-width: 3 3 3 3;");
 
-        ProgressBar pb = new ProgressBar(currentHero.getCurrentHp()/currentHero.getMaxHp());
-	    pb.setStyle("-fx-accent: transparent; -fx-control-inner-background: transparent; -fx-background-color: transparent;");
-        pb.setStyle("-fx-accent: RED ");
+        VBox herosLeftPanel = new VBox();
+        herosLeftPanel.setStyle("-fx-border-color:BLACK;" + "-fx-border-width: 3 3 3 3;");
+        herosLeftPanel.setPrefSize(341, 897);
 
+        VBox actions = new VBox(8);
+        actions.setAlignment(Pos.BASELINE_CENTER);
+        actions.setTranslateX(1240);
+        actions.setPrefSize(345, 897);
+        actions.setBorder(new Border(
+                new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        root.getChildren().add(actions);
 
-		VBox actions= new VBox(8);
-		actions.setAlignment(Pos.BASELINE_CENTER);
-		actions.setTranslateX(1240);
-		actions.setPrefSize(345,897);
-		actions.setBorder(new Border(new BorderStroke(Color.BLACK,BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-		root.getChildren().add(actions);
-
-		Button attack =new Button("Attack!");
-		attack.setAlignment(Pos.CENTER);
-		attack.setFont(Font.font("Old English Text MT",40));
-		attack.setPrefWidth(270);
-		attack.getStyleClass().add("sc3");
-		attack.setOnMouseEntered(event -> {
+        Button attack = new Button("Attack!");
+        attack.setAlignment(Pos.CENTER);
+        attack.setFont(Font.font("Old English Text MT", 40));
+        attack.setPrefWidth(270);
+        attack.getStyleClass().add("sc3");
+        attack.setOnMouseEntered(event -> {
             attack.getStyleClass().removeAll("sc3");
-			attack.getStyleClass().add("sc4");
+            attack.getStyleClass().add("sc4");
         });
         attack.setOnMouseExited(event -> {
             attack.getStyleClass().remove("sc4");
-			attack.getStyleClass().add("sc3");
+            attack.getStyleClass().add("sc3");
         });
-       	actions.getChildren().add(attack);
+        actions.getChildren().add(attack);
         attack.setOnMouseClicked(event -> {
             try {
                 currentHero.attack();
-                pb.setProgress(currentHero.getCurrentHp() / (currentHero.getMaxHp()*1.0));
                 this.updateCellsVisibility(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
+                revalidateHerosPanel(herosLeftPanel, root);
                 isFinished(stage);
             } catch (Exception e) {
-               new AppPopup(e.getMessage(), stage).open();
+                new AppPopup(e.getMessage(), stage).open();
             }
-		});
+        });
 
-		Button cure =new Button("Cure");
-		cure.setAlignment(Pos.CENTER);
-		cure.setFont(Font.font("Old English Text MT",40));
-		cure.setPrefWidth(270);
-		cure.getStyleClass().add("sc3");
-		cure.setOnMouseEntered(event -> {
+        Button cure = new Button("Cure");
+        cure.setAlignment(Pos.CENTER);
+        cure.setFont(Font.font("Old English Text MT", 40));
+        cure.setPrefWidth(270);
+        cure.getStyleClass().add("sc3");
+        cure.setOnMouseEntered(event -> {
             cure.getStyleClass().removeAll("sc3");
-			cure.getStyleClass().add("sc4");
+            cure.getStyleClass().add("sc4");
         });
         cure.setOnMouseExited(event -> {
-            cure.getStyleClass().remove("sc4");;
-			cure.getStyleClass().add("sc3");
+            cure.getStyleClass().remove("sc4");
+            cure.getStyleClass().add("sc3");
         });
         cure.setOnMouseClicked(event -> {
             try {
                 currentHero.cure();
                 this.updateCellsVisibility(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
+                revalidateHerosPanel(herosLeftPanel, root);
                 isFinished(stage);
             } catch (Exception e) {
-               new AppPopup(e.getMessage(), stage).open();
+                new AppPopup(e.getMessage(), stage).open();
             }
-		});
-       	actions.getChildren().add(cure);
+        });
+        actions.getChildren().add(cure);
 
-
-		Button special =new Button("Use Special");
-		special.setAlignment(Pos.CENTER);
-		special.setFont(Font.font("Old English Text MT",40));
-		special.setPrefWidth(270);
-		special.getStyleClass().add("sc3");
-		special.setOnMouseEntered(event -> {
+        Button special = new Button("Use Special");
+        special.setAlignment(Pos.CENTER);
+        special.setFont(Font.font("Old English Text MT", 40));
+        special.setPrefWidth(270);
+        special.getStyleClass().add("sc3");
+        special.setOnMouseEntered(event -> {
             special.getStyleClass().removeAll("sc3");
-			special.getStyleClass().add("sc4");
+            special.getStyleClass().add("sc4");
         });
         special.setOnMouseExited(event -> {
-            special.getStyleClass().remove("sc4");;
-			special.getStyleClass().add("sc3");
+            special.getStyleClass().remove("sc4");
+            special.getStyleClass().add("sc3");
         });
-       	actions.getChildren().add(special);
+        actions.getChildren().add(special);
         special.setOnMouseClicked(e -> {
             try {
                 currentHero.useSpecial();
                 if (currentHero instanceof Explorer)
                     createMap(board);
                 updateCellsVisibility(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
+                revalidateHerosPanel(herosLeftPanel, root);
                 isFinished(stage);
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
             }
         });
 
+        VBox move = new VBox();
+        move.setTranslateY(-100);
+        move.setAlignment(Pos.CENTER);
+        actions.getChildren().add(move);
 
-		VBox move = new VBox();
-		move.setTranslateY(-100);
-		move.setAlignment(Pos.CENTER);
-		actions.getChildren().add(move);
-
-		Button up =new Button("<");
-		up.setRotate(90);
-		up.setAlignment(Pos.CENTER);
-		up.setFont(Font.font(25));
-		//up.setPrefWidth(270);
-		up.getStyleClass().add("sc3");
-		up.setOnMouseEntered(event -> {
+        Button up = new Button("<");
+        up.setRotate(90);
+        up.setAlignment(Pos.CENTER);
+        up.setFont(Font.font(25));
+        up.getStyleClass().add("sc3");
+        up.setOnMouseEntered(event -> {
             up.getStyleClass().removeAll("sc3");
-			up.getStyleClass().add("sc4");
+            up.getStyleClass().add("sc4");
         });
         up.setOnMouseExited(event -> {
-            up.getStyleClass().remove("sc4");;
-			up.getStyleClass().add("sc3");
+            up.getStyleClass().remove("sc4");
+            up.getStyleClass().add("sc3");
         });
-        up.setOnMouseClicked(event -> {
-            try {
-                int currentHp = currentHero.getCurrentHp();
-                currentHero.move(Direction.RIGHT);
-                if (currentHero.getCurrentHp() < currentHp)
-                    new AppPopup("you stepped on a trap!", stage).open();
-                this.updateCellsVisibility(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
-                isFinished(stage);
-            } catch (Exception e) {
-               new AppPopup(e.getMessage(), stage).open();
-            }
 
-        });
-       	move.getChildren().add(up);
+        move.getChildren().add(up);
 
-		HBox h = new HBox(51);
-		h.setAlignment(Pos.CENTER);
-		move.getChildren().add(h);
+        HBox h = new HBox(51);
+        h.setAlignment(Pos.CENTER);
+        move.getChildren().add(h);
 
-		Button left =new Button("<");
-		left.setAlignment(Pos.CENTER);
-		left.setFont(Font.font(25));
+        Button left = new Button("<");
+        left.setAlignment(Pos.CENTER);
+        left.setFont(Font.font(25));
         left.getStyleClass().add("sc3");
-        left.setOnMouseClicked(event -> {
-            try {
-                int currentHp = currentHero.getCurrentHp();
-                currentHero.move(Direction.DOWN);
-                if (currentHero.getCurrentHp() < currentHp)
-                    new AppPopup("you stepped on a trap!", stage).open();
-                updateCellsVisibility(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
-                isFinished(stage);
-            } catch (Exception e) {
-                new AppPopup(e.getMessage(), stage).open();
 
-            }
 
-        });
-
-		left.setOnMouseEntered(event -> {
+        left.setOnMouseEntered(event -> {
             left.getStyleClass().removeAll("sc3");
-			left.getStyleClass().add("sc4");
+            left.getStyleClass().add("sc4");
         });
         left.setOnMouseExited(event -> {
-            left.getStyleClass().remove("sc4");;
-			left.getStyleClass().add("sc3");
+            left.getStyleClass().remove("sc4");
+            left.getStyleClass().add("sc3");
         });
-       	h.getChildren().add(left);
+        h.getChildren().add(left);
 
-
-		Button right =new Button(">");
-		right.setAlignment(Pos.CENTER);
-		right.setFont(Font.font(25));
-		//left.setPrefWidth(270);
-		right.getStyleClass().add("sc3");
-		right.setOnMouseEntered(event -> {
+        Button right = new Button(">");
+        right.setAlignment(Pos.CENTER);
+        right.setFont(Font.font(25));
+        right.getStyleClass().add("sc3");
+        right.setOnMouseEntered(event -> {
             right.getStyleClass().removeAll("sc3");
-			right.getStyleClass().add("sc4");
+            right.getStyleClass().add("sc4");
         });
         right.setOnMouseExited(event -> {
-            right.getStyleClass().remove("sc4");;
-			right.getStyleClass().add("sc3");
+            right.getStyleClass().remove("sc4");
+            right.getStyleClass().add("sc3");
         });
-        right.setOnMouseClicked(event -> {
-            try {
-                int currentHp = currentHero.getCurrentHp();
-                currentHero.move(Direction.UP);
-                if (currentHero.getCurrentHp() < currentHp)
-                    new AppPopup("you stepped on a trap!", stage).open();
-                this.updateCellsVisibility(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
-                isFinished(stage);
-            } catch (Exception e) {
-              new AppPopup(e.getMessage(), stage).open();
 
-            }
+        h.getChildren().add(right);
 
-        });
-       	h.getChildren().add(right);
-		   right.setOnAction(event -> {
-
-		});
-
-		Button down =new Button(">");
-		down.setRotate(90);
-		down.setTextAlignment(TextAlignment.JUSTIFY);
-		down.setAlignment(Pos.CENTER);
-		down.setFont(Font.font(25));
-		down.getStyleClass().add("sc3");
-		down.setOnMouseEntered(event -> {
+        Button down = new Button(">");
+        down.setRotate(90);
+        down.setTextAlignment(TextAlignment.JUSTIFY);
+        down.setAlignment(Pos.CENTER);
+        down.setFont(Font.font(25));
+        down.getStyleClass().add("sc3");
+        down.setOnMouseEntered(event -> {
             down.getStyleClass().removeAll("sc3");
-			down.getStyleClass().add("sc4");
+            down.getStyleClass().add("sc4");
         });
         down.setOnMouseExited(event -> {
-            down.getStyleClass().remove("sc4");;
-			down.getStyleClass().add("sc3");
+            down.getStyleClass().remove("sc4");
+            down.getStyleClass().add("sc3");
         });
-        down.setOnMouseClicked(event -> {
-            try {
-                int currentHp = currentHero.getCurrentHp();
-                currentHero.move(Direction.LEFT);
-                if (currentHero.getCurrentHp() < currentHp)
-                    new AppPopup("you stepped on a trap!", stage).open();
-                this.updateCellsVisibility(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
-                isFinished(stage);
-            } catch (Exception e) {
-               new AppPopup(e.getMessage(), stage).open();
-            }
-
-        });
-
         move.getChildren().add(down);
 
 
+        left.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.A));
+        right.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.D));
+        up.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.W));
+        down.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.S));
 
-        for (Hero hero : Game.heroes)
-            heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		root.getChildren().add(heros);
+        revalidateHerosPanel(herosLeftPanel, root);
 
-		Button endT =new Button("End Turn");
-		endT.setTranslateY(270);
-		endT.setFont(Font.font("Old English Text MT",40));
-		endT.setPrefWidth(320);
-		endT.getStyleClass().add("endT");
-		endT.setOnMouseEntered(event -> {
-            endT.setStyle("-fx-background-color:Red");
-        });
-        endT.setOnMouseExited(event -> {
-            endT.setStyle("-fx-background-color:Brown");
-        });
-       	actions.getChildren().add(endT);
+        Button endT = new Button("End Turn");
+        endT.setTranslateY(270);
+        endT.setFont(Font.font("Old English Text MT", 40));
+        endT.setPrefWidth(320);
+        endT.getStyleClass().add("endT");
+        endT.setOnMouseEntered(event -> endT.setStyle("-fx-background-color:Red"));
+        endT.setOnMouseExited(event -> endT.setStyle("-fx-background-color:Brown"));
+        actions.getChildren().add(endT);
         endT.setOnMouseClicked(e -> {
             try {
                 Game.endTurn();
                 createMap(board);
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
+                revalidateHerosPanel(herosLeftPanel, root);
                 isFinished(stage);
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
@@ -344,41 +248,10 @@ public class el3ab extends Application {
         });
 
         createMap(board);
-        screen.setOnKeyPressed(e -> {
-            try {
-                int currentHp = currentHero.getCurrentHp();
-                switch (e.getCode()) {
-                    case A:
-                        currentHero.move(Direction.DOWN);
-                        break;
-                    case W:
-                        currentHero.move(Direction.RIGHT);
-                        break;
-                    case D:
-                        currentHero.move(Direction.UP);
-                        break;
-                    case S:
-                        currentHero.move(Direction.LEFT);
-                        break;
-                    default:
-                        break;
-                }
-                if (currentHero.getCurrentHp() < currentHp)
-                    new AppPopup("you stepped on a trap!", stage).open();
-                root.getChildren().remove(heros);
-                heros.getChildren().clear();
-                for (Hero hero : Game.heroes)
-                    heros.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
-		        root.getChildren().add(heros);
-                updateCellsVisibility(board);
-            } catch (Exception err) {
-                new AppPopup(err.getMessage(), stage).open();
-            }
-        });
-
+        screen.setOnMouseClicked(e ->revalidateHerosPanel(herosLeftPanel, root));
+        screen.setOnKeyPressed(e ->moveRoutine(stage, herosLeftPanel, root, board, e.getCode()));
 
         root.getChildren().add(board);
-
 
         stage.setWidth(1600);
         stage.setHeight(896);
@@ -389,43 +262,51 @@ public class el3ab extends Application {
 
     }
 
+    private void moveRoutine(Stage stage, VBox herosLeftPanel, Pane root, GridPane board, KeyCode e) {
+        try {
+            currentHero.move(keyMappings.get(e));
+            checkSteppedOnTrap(stage);
+            this.updateCellsVisibility(board);
+            revalidateHerosPanel(herosLeftPanel, root);
+            isFinished(stage);
+        } catch (Exception err) {
+            new AppPopup(err.getMessage(), stage).open();
+        }
+    }
+
+    private void checkSteppedOnTrap(Stage stage) {
+        int currentHp = currentHero.getCurrentHp();
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> {
+            if (currentHero.getCurrentHp() < currentHp)
+                    new AppPopup("you stepped on a trap!", stage).open();
+        });
+        pause.play();
+    }
+
     private void isFinished(Stage stage) {
-        String endName="";
-        String css = this.getClass().getResource("application.css").toExternalForm();
         if (Game.checkGameOver()) {
-            if (Game.checkWin())
-            endName = "../assets/finalScreen/victory.png";
-            else
-                endName = "../assets/finalScreen/defeat.png";
-            StackPane endroot = new StackPane();
-            Scene endScene = new Scene(endroot);
-            endScene.getStylesheets().add(css);
-            Image endImg = new Image(getClass().getResourceAsStream(endName));
+            StackPane endScreen = new StackPane();
+            Scene endScene = new Scene(endScreen);
+            endScene.getStylesheets().add(this.getClass().getResource("application.css").toExternalForm());
+            Image endImg = new Image(getClass().getResourceAsStream(Game.checkWin()?"../assets/finalScreen/victory.png":"../assets/finalScreen/defeat.png"));
             BackgroundImage endS = new BackgroundImage(endImg, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT,
                     BackgroundPosition.DEFAULT,
                     new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, false, true));
-            endroot.setBackground(new Background(endS));
-
-            Button quit2 = new Button();
-            quit2.setText("Quit");
-            quit2.setFont(Font.font("Old English Text MT", 100));
-            quit2.setTranslateX(-680);
-            quit2.setTranslateY(350);
-            quit2.getStyleClass().add("sc1");
-            quit2.setOnMouseEntered(event -> {
-                quit2.setStyle("-fx-text-fill: brown");
-            });
-            quit2.setOnMouseExited(event -> {
-                quit2.setStyle("-fx-text-fill: White");
-            });
-            endroot.getChildren().add(quit2);
-            quit2.setOnAction(event -> {
-                javafx.application.Platform.exit();
-            });
+            endScreen.setBackground(new Background(endS));
             stage.setScene(endScene);
         }
     }
 
+
+
+    private void revalidateHerosPanel(VBox Panel,Pane parent) {
+        parent.getChildren().remove(Panel);
+        Panel.getChildren().clear();
+        for (Hero hero : Game.heroes)
+            Panel.getChildren().add(new HeroPanelDetails(hero,this.currentHero));
+        parent.getChildren().add(Panel);
+    }
 
     private void createMap(GridPane board) {
         for (int x = 0; x < 15; x++)
@@ -465,10 +346,14 @@ public class el3ab extends Application {
             else
                 img = getScaledImage("../assets/Darkgrass.png", 60, 57);
 
-            img.setEffect(new DropShadow(2, Color.BLACK));
             img.setId(cell.toString());
-            img.addEventFilter(MouseEvent.MOUSE_CLICKED, e ->{
+            img.setStyle("-fx-cursor:hand");
+            img.setEffect(new DropShadow(2, Color.BLACK));
+            img.setOnMouseEntered(e -> ((ImageView) e.getSource()).setOpacity(0.75));
+            img.setOnMouseExited(e -> ((ImageView) e.getSource()).setOpacity(1));
+            img.setOnMouseClicked(e ->{
                 var source = ((ImageView) e.getSource()).getId();
+                ((ImageView) e.getSource()).setOpacity(0.15);
                 Cell target=null;
                 for (Cell[] cells : Game.map)
                     for (Cell mapCell : cells)
@@ -487,7 +372,6 @@ public class el3ab extends Application {
                     else if ((((CharacterCell) target).getCharacter() instanceof Hero))
                         currentHero = ((Hero) ((CharacterCell) target).getCharacter());
                 }
-
             });
             return img;
     }
@@ -505,12 +389,6 @@ public class el3ab extends Application {
         imageView.setCache(true);
         return imageView;
     }
-
-	public static void main(String[] args) {
-		launch(args);
-	}
-
-
 
 
     public class HeroPanelDetails extends HBox {
@@ -538,8 +416,12 @@ public class el3ab extends Application {
             Text typeL = new Text("Type: " + ty);
             typeL.setStyle("-fx-fill: white;");
             info.getChildren().add(typeL);
-            Text targetL = new Text("Current Target: " + her.getTarget());
+            Text targetL = new Text("Current Target: ");
             targetL.setStyle("-fx-fill: white;");
+            if (her.getTarget() == null)
+                targetL.setText("Current Target: Nobody");
+            else
+                targetL.setText("Current Target: "+her.getTarget().getName());
             info.getChildren().add(targetL);
             Text actionsL = new Text("Actions: " + her.getActionsAvailable());
             actionsL.setStyle("-fx-fill: white;");

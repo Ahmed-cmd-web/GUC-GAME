@@ -109,9 +109,9 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
         nextButton.setFont(new Font(Font.DIALOG, Font.ITALIC, 40));
         nextButton.addMouseListener(this);
         nextButton.addActionListener(e -> {
+            Application.launch(el3ab.class);
             frame.setVisible(false);
             frame.dispose();
-            Application.launch(el3ab.class);
         });
         var rightColumnGbc = new GridBagConstraints();
         description.setSize(300, 450);
