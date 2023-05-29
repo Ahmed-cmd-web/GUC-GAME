@@ -18,7 +18,7 @@ import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import utils.AppPopup;
-
+import utils.CPU;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
@@ -33,17 +33,25 @@ import javafx.application.Application;
 import javafx.scene.layout.VBox;
 
 public class el3ab extends Application {
-	private Hero currentHero = Game.currentHero;
+	public Hero currentHero = Game.currentHero;
     private Map<KeyCode,Direction> keyMappings = Map.of(
                         KeyCode.A, Direction.DOWN,
                         KeyCode.W, Direction.RIGHT,
                         KeyCode.D, Direction.UP,
                         KeyCode.S, Direction.LEFT
-                    );
+    );
+    public Button attack;
+    public Button cure;
+    public Button special;
+    public Button up;
+    public Button down;
+    public Button right;
+    public Button left;
+    public Button endTurn;
+    private CPU cpu = new CPU(this);
 
 	@Override
     public void start(Stage stage) {
-
         Game.startGame(currentHero);
         String css = this.getClass().getResource("application.css").toExternalForm();
         Pane root = new Pane();
@@ -71,7 +79,7 @@ public class el3ab extends Application {
                 new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         root.getChildren().add(actions);
 
-        Button attack = new Button("Attack!");
+        attack = new Button("Attack!");
         attack.setAlignment(Pos.CENTER);
         attack.setFont(Font.font("Old English Text MT", 40));
         attack.setPrefWidth(270);
@@ -85,7 +93,7 @@ public class el3ab extends Application {
             attack.getStyleClass().add("sc3");
         });
         actions.getChildren().add(attack);
-        attack.setOnMouseClicked(event -> {
+        attack.setOnAction(event -> {
             try {
                 currentHero.attack();
                 this.updateCellsVisibility(board);
@@ -96,7 +104,7 @@ public class el3ab extends Application {
             }
         });
 
-        Button cure = new Button("Cure");
+        cure = new Button("Cure");
         cure.setAlignment(Pos.CENTER);
         cure.setFont(Font.font("Old English Text MT", 40));
         cure.setPrefWidth(270);
@@ -109,7 +117,7 @@ public class el3ab extends Application {
             cure.getStyleClass().remove("sc4");
             cure.getStyleClass().add("sc3");
         });
-        cure.setOnMouseClicked(event -> {
+        cure.setOnAction(event -> {
             try {
                 currentHero.cure();
                 this.updateCellsVisibility(board);
@@ -121,7 +129,7 @@ public class el3ab extends Application {
         });
         actions.getChildren().add(cure);
 
-        Button special = new Button("Use Special");
+        special = new Button("Use Special");
         special.setAlignment(Pos.CENTER);
         special.setFont(Font.font("Old English Text MT", 40));
         special.setPrefWidth(270);
@@ -135,7 +143,7 @@ public class el3ab extends Application {
             special.getStyleClass().add("sc3");
         });
         actions.getChildren().add(special);
-        special.setOnMouseClicked(e -> {
+        special.setOnAction(e -> {
             try {
                 currentHero.useSpecial();
                 if (currentHero instanceof Explorer)
@@ -153,7 +161,7 @@ public class el3ab extends Application {
         move.setAlignment(Pos.CENTER);
         actions.getChildren().add(move);
 
-        Button up = new Button("<");
+        up = new Button("<");
         up.setRotate(90);
         up.setAlignment(Pos.CENTER);
         up.setFont(Font.font(25));
@@ -173,7 +181,7 @@ public class el3ab extends Application {
         h.setAlignment(Pos.CENTER);
         move.getChildren().add(h);
 
-        Button left = new Button("<");
+        left = new Button("<");
         left.setAlignment(Pos.CENTER);
         left.setFont(Font.font(25));
         left.getStyleClass().add("sc3");
@@ -189,7 +197,7 @@ public class el3ab extends Application {
         });
         h.getChildren().add(left);
 
-        Button right = new Button(">");
+        right = new Button(">");
         right.setAlignment(Pos.CENTER);
         right.setFont(Font.font(25));
         right.getStyleClass().add("sc3");
@@ -204,7 +212,7 @@ public class el3ab extends Application {
 
         h.getChildren().add(right);
 
-        Button down = new Button(">");
+        down = new Button(">");
         down.setRotate(90);
         down.setTextAlignment(TextAlignment.JUSTIFY);
         down.setAlignment(Pos.CENTER);
@@ -221,22 +229,22 @@ public class el3ab extends Application {
         move.getChildren().add(down);
 
 
-        left.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.A));
-        right.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.D));
-        up.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.W));
-        down.setOnMouseClicked(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.S));
+        left.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.A));
+        right.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.D));
+        up.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.W));
+        down.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.S));
 
         revalidateHerosPanel(herosLeftPanel, root);
 
-        Button endT = new Button("End Turn");
-        endT.setTranslateY(270);
-        endT.setFont(Font.font("Old English Text MT", 40));
-        endT.setPrefWidth(320);
-        endT.getStyleClass().add("endT");
-        endT.setOnMouseEntered(event -> endT.setStyle("-fx-background-color:Red"));
-        endT.setOnMouseExited(event -> endT.setStyle("-fx-background-color:Brown"));
-        actions.getChildren().add(endT);
-        endT.setOnMouseClicked(e -> {
+        endTurn = new Button("End Turn");
+        endTurn.setTranslateY(270);
+        endTurn.setFont(Font.font("Old English Text MT", 40));
+        endTurn.setPrefWidth(320);
+        endTurn.getStyleClass().add("endT");
+        endTurn.setOnMouseEntered(event -> endTurn.setStyle("-fx-background-color:Red"));
+        endTurn.setOnMouseExited(event -> endTurn.setStyle("-fx-background-color:Brown"));
+        actions.getChildren().add(endTurn);
+        endTurn.setOnAction(e -> {
             try {
                 Game.endTurn();
                 createMap(board);
@@ -259,6 +267,11 @@ public class el3ab extends Application {
         stage.setTitle("Game Map");
         stage.setScene(screen);
         stage.show();
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> cpu.play());
+        pause.play();
+
+
 
     }
 
@@ -269,6 +282,7 @@ public class el3ab extends Application {
             this.updateCellsVisibility(board);
             revalidateHerosPanel(herosLeftPanel, root);
             isFinished(stage);
+            // System.out.println(currentHero.getActionsAvailable());
         } catch (Exception err) {
             new AppPopup(err.getMessage(), stage).open();
         }
@@ -276,7 +290,7 @@ public class el3ab extends Application {
 
     private void checkSteppedOnTrap(Stage stage) {
         int currentHp = currentHero.getCurrentHp();
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.5));
         pause.setOnFinished(e -> {
             if (currentHero.getCurrentHp() < currentHp)
                     new AppPopup("you stepped on a trap!", stage).open();

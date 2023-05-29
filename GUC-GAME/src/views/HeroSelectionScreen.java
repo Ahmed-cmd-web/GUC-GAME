@@ -27,6 +27,7 @@ import javax.swing.border.EmptyBorder;
 import engine.Game;
 import javafx.application.Application;
 import model.characters.Hero;
+import utils.CPU;
 
 
 public class HeroSelectionScreen extends JLayeredPane implements ActionListener,MouseListener{
@@ -109,7 +110,9 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
         nextButton.setFont(new Font(Font.DIALOG, Font.ITALIC, 40));
         nextButton.addMouseListener(this);
         nextButton.addActionListener(e -> {
-            Application.launch(el3ab.class);
+            var er = new el3ab();
+
+            Application.launch(er.getClass());
             frame.setVisible(false);
             frame.dispose();
         });

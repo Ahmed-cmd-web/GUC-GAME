@@ -202,7 +202,7 @@ public class Game {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		playMusic();
+		// playMusic();
 		var frame = new MotherFrame();
 		frame.add(new StartScreen(frame));
 		frame.add(new HeroSelectionScreen(frame));
