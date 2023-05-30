@@ -1,10 +1,13 @@
 package engine;
 
+
 import java.awt.Point;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
 
 import model.characters.Explorer;
 import model.characters.Fighter;
@@ -17,8 +20,12 @@ import model.world.Cell;
 import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import model.world.TrapCell;
+import views.HeroSelectionScreen;
+import views.MotherFrame;
+import views.StartScreen;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
+import jaco.mp3.player.MP3Player;
 
 public class Game {
 
@@ -26,6 +33,7 @@ public class Game {
 	public static ArrayList<Hero> heroes = new ArrayList<Hero>();
 	public static ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	public static Cell[][] map = new Cell[15][15];
+	public static Hero currentHero;
 
 	public static void loadHeroes(String filePath) throws IOException {
 		availableHeroes = new ArrayList<>();
@@ -180,4 +188,27 @@ public class Game {
 			map[x][y] = new TrapCell();
 		}
 	}
+
+	private static void playMusic() {
+		var player = new MP3Player(new File("GUC-GAME/src/assets/music/gameMusic1.mp3"),
+		new File("GUC-GAME/src/assets/music/gameMusic2.mp3"));
+        player.play();
+        player.setRepeat(true);
+    }
+
+	public static void main(String[] args) {
+		try {
+			loadHeroes("GUC-GAME/Heros.csv");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		playMusic();
+		var frame = new MotherFrame();
+		frame.add(new StartScreen(frame));
+		frame.add(new HeroSelectionScreen(frame));
+		frame.setVisible(true);
+
+
+	}
+
 }

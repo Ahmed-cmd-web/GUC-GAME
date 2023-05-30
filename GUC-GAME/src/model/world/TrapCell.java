@@ -6,6 +6,8 @@ public class TrapCell extends Cell {
 
 	public TrapCell() {
 		trapDamage = ((int) (Math.random() * 3 + 1)) * 10;
+		this.setCellImage("trap.jpeg");
+
 	}
 
 	public int getTrapDamage() {
