@@ -13,9 +13,9 @@ public class Explorer extends Hero {
 	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
 		super.useSpecial();
 		for(int i = 0; i < Game.map.length; i++) {
-			// for(int j = 0; j < Game.map[i].length; j++) {
-			// 	Game.map[i][j].setVisible(true);
-			// }
+			for(int j = 0; j < Game.map[i].length; j++) {
+				Game.map[i][j].setVisible(true);
+			}
 		}
 	}
 
