@@ -95,10 +95,18 @@ public class el3ab extends Application {
         actions.getChildren().add(attack);
         attack.setOnAction(event -> {
             try {
+                attack.getStyleClass().removeAll("sc3");
+            attack.getStyleClass().add("sc4");
                 currentHero.attack();
                 this.updateCellsVisibility(board);
                 revalidateHerosPanel(herosLeftPanel, root);
                 isFinished(stage);
+                 PauseTransition pause = new PauseTransition(Duration.seconds(0.500));
+            pause.setOnFinished(j -> {
+                    attack.getStyleClass().remove("sc4");
+            attack.getStyleClass().add("sc3");
+                });
+                pause.play();
             } catch (Exception e) {
                 new AppPopup(e.getMessage(), stage).open();
             }
@@ -229,10 +237,50 @@ public class el3ab extends Application {
         move.getChildren().add(down);
 
 
-        left.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.A));
-        right.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.D));
-        up.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board, KeyCode.W));
-        down.setOnAction(event -> moveRoutine(stage, herosLeftPanel, root, board,KeyCode.S));
+        left.setOnAction(event -> {
+            left.getStyleClass().removeAll("sc3");
+            left.getStyleClass().add("sc4");
+            moveRoutine(stage, herosLeftPanel, root, board, KeyCode.A);
+            PauseTransition pause = new PauseTransition(Duration.seconds(0.500));
+            pause.setOnFinished(j -> {
+                    left.getStyleClass().remove("sc4");
+            left.getStyleClass().add("sc3");
+                });
+                pause.play();
+        });
+        right.setOnAction(event -> {
+            right.getStyleClass().removeAll("sc3");
+            right.getStyleClass().add("sc4");
+            moveRoutine(stage, herosLeftPanel, root, board, KeyCode.D);
+             PauseTransition pause = new PauseTransition(Duration.seconds(0.500));
+            pause.setOnFinished(j -> {
+                    right.getStyleClass().remove("sc4");
+            right.getStyleClass().add("sc3");
+                });
+                pause.play();
+        });
+        up.setOnAction(event -> {
+            up.getStyleClass().removeAll("sc3");
+            up.getStyleClass().add("sc4");
+            moveRoutine(stage, herosLeftPanel, root, board, KeyCode.W);
+             PauseTransition pause = new PauseTransition(Duration.seconds(0.500));
+            pause.setOnFinished(j -> {
+                    up.getStyleClass().remove("sc4");
+            up.getStyleClass().add("sc3");
+                });
+                pause.play();
+        });
+        down.setOnAction(event -> {
+            down.getStyleClass().removeAll("sc3");
+            down.getStyleClass().add("sc4");
+            moveRoutine(stage, herosLeftPanel, root, board, KeyCode.S);
+             PauseTransition pause = new PauseTransition(Duration.seconds(0.500));
+            pause.setOnFinished(j -> {
+                    down.getStyleClass().remove("sc4");
+            down.getStyleClass().add("sc3");
+                });
+                pause.play();
+        });
 
         revalidateHerosPanel(herosLeftPanel, root);
 
@@ -246,10 +294,14 @@ public class el3ab extends Application {
         actions.getChildren().add(endTurn);
         endTurn.setOnAction(e -> {
             try {
+                endTurn.setStyle("-fx-background-color:Red");
                 Game.endTurn();
                 createMap(board);
                 revalidateHerosPanel(herosLeftPanel, root);
                 isFinished(stage);
+                PauseTransition pause = new PauseTransition(Duration.seconds(0.500));
+                pause.setOnFinished(j -> endTurn.setStyle("-fx-background-color:Brown"));
+                pause.play();
             } catch (Exception err) {
                 new AppPopup(err.getMessage(), stage).open();
             }
@@ -277,12 +329,13 @@ public class el3ab extends Application {
 
     private void moveRoutine(Stage stage, VBox herosLeftPanel, Pane root, GridPane board, KeyCode e) {
         try {
+
             currentHero.move(keyMappings.get(e));
             checkSteppedOnTrap(stage);
             this.updateCellsVisibility(board);
             revalidateHerosPanel(herosLeftPanel, root);
             isFinished(stage);
-            // System.out.println(currentHero.getActionsAvailable());
+
         } catch (Exception err) {
             new AppPopup(err.getMessage(), stage).open();
         }
