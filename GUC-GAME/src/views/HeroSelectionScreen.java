@@ -27,7 +27,6 @@ import javax.swing.border.EmptyBorder;
 import engine.Game;
 import javafx.application.Application;
 import model.characters.Hero;
-import utils.CPU;
 
 
 public class HeroSelectionScreen extends JLayeredPane implements ActionListener,MouseListener{
@@ -36,7 +35,6 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
     private Row heroRow = new Row("Fighters", new String[] { "Joel.png", "David.png" },this);
     private Row  heroRow2 = new Row("Explorers", new String[] {"Tess.png", "Riley.png", "Tommy.png"},this);
     private Row  heroRow3 = new Row("Medics", new String[] { "Ellie.png", "Bill.png","Henry.png"},this);
-
 
 
     private ImageIcon returnScaledIcon(String path,int width,int height) {
@@ -111,10 +109,9 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
         nextButton.addMouseListener(this);
         nextButton.addActionListener(e -> {
             var er = new el3ab();
-
-            Application.launch(er.getClass());
             frame.setVisible(false);
             frame.dispose();
+            Application.launch(er.getClass());
         });
         var rightColumnGbc = new GridBagConstraints();
         description.setSize(300, 450);

@@ -49,6 +49,7 @@ public class el3ab extends Application {
     public Button left;
     public Button endTurn;
     private CPU cpu = new CPU(this);
+    public static boolean useCPU = false;
 
 	@Override
     public void start(Stage stage) {
@@ -319,9 +320,11 @@ public class el3ab extends Application {
         stage.setTitle("Game Map");
         stage.setScene(screen);
         stage.show();
-        PauseTransition pause = new PauseTransition(Duration.seconds(2));
-        pause.setOnFinished(e -> cpu.play());
-        pause.play();
+        if (useCPU) {
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(e -> cpu.play());
+            pause.play();
+        }
 
 
 
