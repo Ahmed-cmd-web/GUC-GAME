@@ -37,7 +37,6 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
     private Row  heroRow3 = new Row("Medics", new String[] { "Ellie.png", "Bill.png","Henry.png"},this);
 
 
-
     private ImageIcon returnScaledIcon(String path,int width,int height) {
         return new ImageIcon(new ImageIcon(path)
                 .getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
@@ -109,9 +108,10 @@ public class HeroSelectionScreen extends JLayeredPane implements ActionListener,
         nextButton.setFont(new Font(Font.DIALOG, Font.ITALIC, 40));
         nextButton.addMouseListener(this);
         nextButton.addActionListener(e -> {
-            Application.launch(el3ab.class);
+            var er = new el3ab();
             frame.setVisible(false);
             frame.dispose();
+            Application.launch(er.getClass());
         });
         var rightColumnGbc = new GridBagConstraints();
         description.setSize(300, 450);

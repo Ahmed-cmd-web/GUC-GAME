@@ -34,6 +34,21 @@ public class StartScreen extends JLayeredPane {
         startButton.setSize(50, 100);
         startButton.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 40));
 
+
+        JButton watchCpu = new JButton("Watch CPU");
+        watchCpu.addActionListener(e -> {
+            el3ab.useCPU = true;
+            frame.layout.next(frame.getContentPane());
+        });
+        watchCpu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        watchCpu.setForeground(Color.white);
+        watchCpu.setOpaque(false);
+        watchCpu.setContentAreaFilled(false);
+        watchCpu.setBorderPainted(false);
+        watchCpu.setFocusPainted(false);
+        watchCpu.setSize(50, 100);
+        watchCpu.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 40));
+
         startButton.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 startButton.setForeground(Color.red);
@@ -43,9 +58,21 @@ public class StartScreen extends JLayeredPane {
                 startButton.setForeground(Color.white);
             };
         });
+
+        watchCpu.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                watchCpu.setForeground(Color.cyan);
+            };
+
+            public void mouseExited(MouseEvent e) {
+                watchCpu.setForeground(Color.white);
+            };
+        });
         var gbc = new GridBagConstraints();
         gbc.anchor = GridBagConstraints.SOUTHEAST;
         this.add(startButton, gbc);
+        gbc.anchor = GridBagConstraints.SOUTH;
+        this.add(watchCpu, gbc);
     }
 
 
