@@ -11,9 +11,11 @@
 - Java
 - Junit
 - git
+- JavaFx
+- Jswing
 
 
 ### This project was prepared by:
 - Ahmed Said 
-- Abdulrahman Mohammed (Nofall)
-- Abdulrahman Emad (3omda)
+- Abdulrahman Mohammed
+- Abdulrahman Emad
