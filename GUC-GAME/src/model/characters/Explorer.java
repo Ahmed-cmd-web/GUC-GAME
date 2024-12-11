@@ -9,7 +9,7 @@ public class Explorer extends Hero {
 	public Explorer(String name, int maxHp, int attackDamage, int maxActions) {
 		super(name, maxHp, attackDamage, maxActions);
 	}
-	
+
 	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
 		super.useSpecial();
 		for(int i = 0; i < Game.map.length; i++) {
